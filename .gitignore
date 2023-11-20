@@ -31,3 +31,21 @@ build/
 
 ### VS Code ###
 .vscode/
+/chain-common/.mvn/wrapper/maven-wrapper.jar
+/chain-flow/.mvn/wrapper/maven-wrapper.jar
+/chain-flow-api/.mvn/wrapper/maven-wrapper.jar
+/chain-gateway/.mvn/wrapper/maven-wrapper.jar
+/chain-user/.mvn/wrapper/maven-wrapper.jar
+/chain-common/.mvn/wrapper/maven-wrapper.properties
+/chain-flow/.mvn/wrapper/maven-wrapper.properties
+/chain-flow-api/.mvn/wrapper/maven-wrapper.properties
+/chain-gateway/.mvn/wrapper/maven-wrapper.properties
+/chain-user/.mvn/wrapper/maven-wrapper.properties
+/chain-common/mvnw
+/chain-flow/mvnw
+/chain-flow-api/mvnw
+/chain-gateway/mvnw
+/chain-common/mvnw.cmd
+/chain-flow/mvnw.cmd
+/chain-flow-api/mvnw.cmd
+/chain-gateway/mvnw.cmd

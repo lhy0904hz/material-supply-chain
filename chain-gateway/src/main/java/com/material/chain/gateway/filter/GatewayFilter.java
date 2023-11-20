@@ -37,7 +37,6 @@ public class GatewayFilter implements GlobalFilter, Ordered {
 
     @Autowired
     private RedisTemplateService redisTemplateService;
-
     public static final String AUTH_TOKEN = "token";
 
     @Override

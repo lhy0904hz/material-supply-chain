@@ -33,7 +33,7 @@ import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Component
-public class GatewayFilter implements GlobalFilter, Ordered {
+public class TokenFilter implements GlobalFilter, Ordered {
     @Autowired
     private RedisTemplateService redisTemplateService;
     public static final String AUTH_TOKEN = "token";

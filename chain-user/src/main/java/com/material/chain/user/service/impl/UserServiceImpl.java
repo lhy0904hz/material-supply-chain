@@ -5,8 +5,9 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.material.chain.common.constant.RedisKey;
+import com.material.chain.common.utils.JwtUtil;
 import com.material.chain.user.Exception.GlobalException;
-import com.material.chain.user.common.RedisKey;
 import com.material.chain.user.components.RedisTemplateService;
 import com.material.chain.user.convert.UserConvert;
 import com.material.chain.user.domain.dto.LoginDTO;
@@ -16,7 +17,6 @@ import com.material.chain.user.domain.vo.UserInfoResponse;
 import com.material.chain.user.enums.StatusEnum;
 import com.material.chain.user.mapper.UserPoMapper;
 import com.material.chain.user.service.UserService;
-import com.material.chain.user.utils.JwtUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -63,7 +63,7 @@ public class UserServiceImpl extends ServiceImpl<UserPoMapper, UserPo> implement
         String token = JwtUtil.buildJWT(JSON.toJSONString(response), String.valueOf(userPo.getId()), 3600 * 24);
         response.setToken(token);
         loginResponse.setToken(token);
-        redisTemplateService.set(RedisKey.ADMIN_USER_KEY + userPo.getId(), JSONObject.toJSONString(response), 3600 * 24L, TimeUnit.SECONDS);
+        redisTemplateService.set(String.format(RedisKey.ADMIN_USER_KEY, userPo.getId()), JSONObject.toJSONString(response), 3600 * 24L, TimeUnit.SECONDS);
 
         return loginResponse;
     }

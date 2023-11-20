@@ -1,7 +1,7 @@
 package com.material.chain.user.handler;
 
+import com.material.chain.common.utils.ApiResult;
 import com.material.chain.user.Exception.GlobalException;
-import com.material.chain.user.utils.ApiResult;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;

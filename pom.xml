@@ -6,6 +6,8 @@
     <modules>
         <module>chain-user</module>
         <module>chain-flow</module>
+        <module>chain-common</module>
+        <module>chain-gateway</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -15,7 +17,6 @@
     </parent>
     <groupId>com.supply.chain</groupId>
     <artifactId>material-supply-chain</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
     <name>material-supply-chain</name>
 
 

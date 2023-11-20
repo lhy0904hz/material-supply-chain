@@ -1,9 +1,9 @@
 package com.material.chain.user.controller;
 
+import com.material.chain.common.utils.ApiResult;
 import com.material.chain.user.domain.dto.LoginDTO;
 import com.material.chain.user.domain.vo.LoginResponse;
 import com.material.chain.user.service.UserService;
-import com.material.chain.user.utils.ApiResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
  * 用户管理
  */
 @RestController
-@RequestMapping("v1/api/chain/user/")
+@RequestMapping("v1/api/chain/admin/user/")
 public class UserController {
     @Autowired
     private UserService userService;

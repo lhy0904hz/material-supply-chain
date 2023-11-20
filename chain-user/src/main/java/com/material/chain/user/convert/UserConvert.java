@@ -1,7 +1,7 @@
 package com.material.chain.user.convert;
 
+import com.material.chain.common.utils.RSAEncrypt;
 import com.material.chain.user.Exception.GlobalException;
-import com.material.chain.user.utils.RSAEncrypt;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j

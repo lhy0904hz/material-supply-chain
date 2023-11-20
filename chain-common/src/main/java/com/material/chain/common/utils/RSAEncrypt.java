@@ -1,7 +1,7 @@
-package com.material.chain.user.utils;
+package com.material.chain.common.utils;
 
-import com.material.chain.user.common.EncryptKey;
-import org.apache.tomcat.util.codec.binary.Base64;
+import com.material.chain.common.constant.EncryptKey;
+import org.apache.commons.codec.binary.Base64;
 
 import javax.crypto.Cipher;
 import java.security.KeyFactory;

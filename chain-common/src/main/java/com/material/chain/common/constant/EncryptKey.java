@@ -1,4 +1,4 @@
-package com.material.chain.user.common;
+package com.material.chain.common.constant;
 
 public class EncryptKey {
 

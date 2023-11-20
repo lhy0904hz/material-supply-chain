@@ -1,0 +1,24 @@
+server:
+  port: 9010
+
+spring:
+  application:
+    name: chain-gateway
+  cloud:
+    nacos:
+      discovery:
+        server-addr: localhost:8848
+        namespace: public
+        group: public
+    gateway:
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins: "*"
+            allowedMethods: "*"
+            allowedHeaders: "*"
+      routes:
+        - id: chain-user
+          uri: lb://chain-user
+          predicates:
+            - Path=/v1/api/chain/admin/**

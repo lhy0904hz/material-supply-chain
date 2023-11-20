@@ -17,7 +17,7 @@ spring:
         server-addr: 127.0.0.1:8848
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/dl_ship_new?useAffectedRows=true&rewriteBatchedStatements=true&allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=GMT%2B8
+    url: jdbc:mysql://localhost:3306/chain_user?useAffectedRows=true&rewriteBatchedStatements=true&allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=GMT%2B8
     username: root
     password: root
     type: com.alibaba.druid.pool.DruidDataSource
@@ -38,7 +38,7 @@ spring:
       connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=500;druid.mysql.usePingMethod=false
 mybatis-plus:
   mapper-locations: classpath:mapper/*.xml
-  type-aliases-package: com.ship.material.domain.po
+  type-aliases-package: com.material.chain.user.domain.po
   configuration:
     jdbc-type-for-null: 'null'
     map-underscore-to-camel-case: true

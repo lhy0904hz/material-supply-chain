@@ -18,7 +18,7 @@ import java.util.concurrent.TimeUnit;
  * @Created by LiuHaoYang
  */
 @Component
-public class RedisService {
+public class RedisTemplateService {
 
     @Autowired
     @Qualifier("chainRedisTemplate")

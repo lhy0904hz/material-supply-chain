@@ -9,13 +9,13 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
-    * 资源表
+    * 用户角色表
     */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@TableName(value = "t_permission")
-public class PermissionPo {
+@TableName(value = "t_role_user")
+public class RoleUserPo {
     /**
      * id
      */
@@ -23,40 +23,16 @@ public class PermissionPo {
     private Long id;
 
     /**
-     * 菜单名称
+     * 用户id
      */
-    @TableField(value = "`name`")
-    private String name;
+    @TableField(value = "user_id")
+    private Long userId;
 
     /**
-     * 描述
+     * 角色id
      */
-    @TableField(value = "description")
-    private String description;
-
-    /**
-     * 菜单路径
-     */
-    @TableField(value = "`path`")
-    private String path;
-
-    /**
-     * 父id
-     */
-    @TableField(value = "parent_id")
-    private Long parentId;
-
-    /**
-     * 状态 1:正常 2:删除
-     */
-    @TableField(value = "`status`")
-    private Integer status;
-
-    /**
-     * 排序
-     */
-    @TableField(value = "sort")
-    private Integer sort;
+    @TableField(value = "role_id")
+    private Long roleId;
 
     /**
      * 创建时间
@@ -81,10 +57,4 @@ public class PermissionPo {
      */
     @TableField(value = "update_id")
     private Long updateId;
-
-    /**
-     * 资源类型 1:菜单 2:按钮
-     */
-    @TableField(value = "`type`")
-    private Integer type;
 }

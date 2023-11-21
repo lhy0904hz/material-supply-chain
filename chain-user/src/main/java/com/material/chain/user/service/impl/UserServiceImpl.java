@@ -5,9 +5,9 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.material.chain.base.exception.ApiException;
 import com.material.chain.common.constant.RedisKey;
 import com.material.chain.common.utils.JwtUtil;
-import com.material.chain.user.exception.GlobalException;
 import com.material.chain.user.components.RedisTemplateService;
 import com.material.chain.user.convert.UserConvert;
 import com.material.chain.user.domain.dto.LoginDTO;
@@ -50,11 +50,11 @@ public class UserServiceImpl extends ServiceImpl<UserPoMapper, UserPo> implement
                 .eq(UserPo::getStatus, StatusEnum.NORMAL.getCode());
         UserPo userPo = this.getOne(wrapper);
         if (Objects.isNull(userPo)) {
-            throw new GlobalException("用户不存在");
+            throw new ApiException("用户不存在");
         }
         String passwordByDB = UserConvert.decryptionByPassword(userPo.getPassword());
         if (!Objects.equals(loginPassword, passwordByDB)) {
-            throw new GlobalException("账号或密码错误");
+            throw new ApiException("账号或密码错误");
         }
         UserInfoResponse response = new UserInfoResponse();
         response.setUserId(userPo.getId());

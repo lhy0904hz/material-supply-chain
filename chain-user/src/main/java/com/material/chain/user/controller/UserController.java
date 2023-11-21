@@ -2,6 +2,8 @@ package com.material.chain.user.controller;
 
 import com.material.chain.common.utils.ApiResult;
 import com.material.chain.user.domain.dto.LoginDTO;
+import com.material.chain.user.domain.dto.PermissionDTO;
+import com.material.chain.user.domain.dto.UserRoleDTO;
 import com.material.chain.user.domain.vo.LoginResponse;
 import com.material.chain.user.domain.vo.PermissionVo;
 import com.material.chain.user.service.PermissionService;
@@ -33,11 +35,29 @@ public class UserController {
     }
 
     /**
-     * 获取当前登录人的权限菜单
+     * 获取菜单树
      * @return List<PermissionVo>
      */
     @GetMapping(value = "getCurrentPermissionList")
     public ApiResult<List<PermissionVo>> getCurrentPermissionList() {
-        return ApiResult.success(permissionService.getCurrentPermissionList());
+        return ApiResult.success(permissionService.getPermissionTree());
+    }
+
+    /**
+     * 保存菜单权限
+     * @param dto 入参
+     * @return Boolean
+     */
+    @PostMapping(value = "savePermission")
+    public ApiResult<Boolean> savePermission(@RequestBody PermissionDTO dto) {
+        return ApiResult.success(permissionService.savePermission(dto));
+    }
+
+    /**
+     * 保存用户角色权限
+     */
+    @PostMapping(value = "saveUserRole")
+    public ApiResult<Boolean> saveUserRole(@RequestBody UserRoleDTO dto) {
+        return ApiResult.success(permissionService.saveUserRole(dto));
     }
 }

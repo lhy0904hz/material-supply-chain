@@ -27,4 +27,10 @@ public interface PermissionService extends IService<PermissionPo> {
      * @return boolean
      */
     Boolean saveUserRole(UserRoleDTO dto);
+
+    /**
+     * 退出登录
+     * @return Boolean
+     */
+    Boolean logout();
 }

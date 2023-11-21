@@ -5,7 +5,9 @@ import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.material.chain.common.constant.RedisKey;
 import com.material.chain.common.enums.StatusEnum;
+import com.material.chain.user.components.RedisTemplateService;
 import com.material.chain.user.domain.dto.PermissionDTO;
 import com.material.chain.user.domain.dto.UserRoleDTO;
 import com.material.chain.user.domain.po.PermissionPo;
@@ -36,6 +38,8 @@ public class PermissionServiceImpl extends ServiceImpl<PermissionPoMapper, Permi
     private RolePermissionPoMapper rolePermissionMapper;
     @Autowired
     private RoleUserPoMapper roleUserPoMapper;
+    @Autowired
+    private RedisTemplateService redisTemplateService;
 
     /**
      * 获取菜单树
@@ -112,6 +116,15 @@ public class PermissionServiceImpl extends ServiceImpl<PermissionPoMapper, Permi
             return po;
         }).collect(Collectors.toList());
         return roleUserPoMapper.batchInsert(roleUserList) > 0;
+    }
+
+    /**
+     * 退出登录
+     * @return Boolean
+     */
+    @Override
+    public Boolean logout() {
+        return redisTemplateService.del(String.format(RedisKey.ADMIN_USER_KEY, AppContextUtil.getCurrentUserId()));
     }
 
     private List<PermissionVo> buildPermissionChildrenList(Long parentId, List<PermissionPo> permissionList) {

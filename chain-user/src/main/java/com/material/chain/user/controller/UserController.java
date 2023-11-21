@@ -60,4 +60,13 @@ public class UserController {
     public ApiResult<Boolean> saveUserRole(@RequestBody UserRoleDTO dto) {
         return ApiResult.success(permissionService.saveUserRole(dto));
     }
+
+    /**
+     * 退出登录
+     * @return Boolean
+     */
+    @GetMapping(value = "logout")
+    public ApiResult<Boolean> logout() {
+        return ApiResult.success(permissionService.logout());
+    }
 }

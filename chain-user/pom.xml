@@ -18,8 +18,8 @@
     </properties>
     <dependencies>
         <dependency>
-            <groupId>com.material.chain.common</groupId>
-            <artifactId>chain-common</artifactId>
+            <groupId>com.material.chain.base</groupId>
+            <artifactId>chain-base</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
 

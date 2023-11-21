@@ -7,7 +7,7 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.material.chain.common.constant.RedisKey;
 import com.material.chain.common.utils.JwtUtil;
-import com.material.chain.user.Exception.GlobalException;
+import com.material.chain.user.exception.GlobalException;
 import com.material.chain.user.components.RedisTemplateService;
 import com.material.chain.user.convert.UserConvert;
 import com.material.chain.user.domain.dto.LoginDTO;

@@ -8,6 +8,7 @@
         <module>chain-flow</module>
         <module>chain-common</module>
         <module>chain-gateway</module>
+        <module>chain-base</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>

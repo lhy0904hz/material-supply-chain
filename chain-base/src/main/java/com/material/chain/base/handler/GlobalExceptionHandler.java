@@ -1,7 +1,7 @@
-package com.material.chain.user.handler;
+package com.material.chain.base.handler;
 
+import com.material.chain.base.exception.ApiException;
 import com.material.chain.common.utils.ApiResult;
-import com.material.chain.user.Exception.GlobalException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -12,9 +12,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(GlobalException.class)
+    @ExceptionHandler(ApiException.class)
     @ResponseBody
-   public ApiResult<String> buildShipException(GlobalException exception) {
+   public ApiResult<String> buildShipException(ApiException exception) {
        exception.printStackTrace();
        ApiResult<String> result = new ApiResult<>();
        result.setData(null);

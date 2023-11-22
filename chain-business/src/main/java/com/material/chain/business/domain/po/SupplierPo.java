@@ -41,7 +41,7 @@ public class SupplierPo {
     private String level;
 
     /**
-     * 供应商类型 1:私企 2:国企
+     * 供应商类型 1：品牌供应商 2：自营供应商
      */
     @TableField(value = "supplier_type")
     private Integer supplierType;

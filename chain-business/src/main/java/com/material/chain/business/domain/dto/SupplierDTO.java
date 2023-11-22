@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -34,5 +36,5 @@ public class SupplierDTO {
     private Integer supplierType;
 
     @ApiModelProperty(value = "供应商地址")
-    private SupplierAddressDTO addressDTO;
+    private List<SupplierAddressDTO> addressList;
 }

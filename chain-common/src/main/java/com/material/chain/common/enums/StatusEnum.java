@@ -7,8 +7,8 @@ import jdk.nashorn.internal.objects.annotations.Getter;
  */
 public enum StatusEnum {
 
-    NORMAL(1, "正常"),
-    DELETE(2, "删除"),
+    NORMAL(0, "正常"),
+    DELETE(1, "删除"),
     ;
 
 

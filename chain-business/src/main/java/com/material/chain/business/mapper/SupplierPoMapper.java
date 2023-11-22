@@ -1,7 +1,10 @@
 package com.material.chain.business.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.material.chain.business.domain.po.SupplierAddressPo;
 import com.material.chain.business.domain.po.SupplierPo;
+
+import java.util.Collection;
 import java.util.List;
 import org.apache.ibatis.annotations.Param;
 

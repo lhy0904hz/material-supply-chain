@@ -1,16 +1,13 @@
 package com.material.chain.user.controller;
 
+import com.material.chain.common.doamin.vo.PageVo;
 import com.material.chain.common.utils.ApiResult;
 import com.material.chain.user.domain.dto.RoleDTO;
 import com.material.chain.user.domain.dto.RolePageDTO;
-import com.material.chain.user.domain.vo.PageVo;
-import com.material.chain.user.domain.vo.PermissionVo;
 import com.material.chain.user.domain.vo.RoleListVo;
 import com.material.chain.user.service.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 /**
  * 角色管理

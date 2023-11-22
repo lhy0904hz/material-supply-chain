@@ -4,7 +4,6 @@ import com.material.chain.common.utils.ApiResult;
 import com.material.chain.user.domain.dto.LoginDTO;
 import com.material.chain.user.domain.dto.PermissionDTO;
 import com.material.chain.user.domain.dto.UserRoleDTO;
-import com.material.chain.user.domain.vo.LoginResponse;
 import com.material.chain.user.domain.vo.PermissionVo;
 import com.material.chain.user.domain.vo.UserInfoResponse;
 import com.material.chain.user.service.PermissionService;

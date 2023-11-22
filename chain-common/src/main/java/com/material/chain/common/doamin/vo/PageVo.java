@@ -1,4 +1,4 @@
-package com.material.chain.user.domain.vo;
+package com.material.chain.common.doamin.vo;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

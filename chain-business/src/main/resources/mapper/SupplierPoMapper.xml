@@ -9,6 +9,7 @@
     <result column="subject_name" jdbcType="VARCHAR" property="subjectName" />
     <result column="level" jdbcType="VARCHAR" property="level" />
     <result column="supplier_type" jdbcType="TINYINT" property="supplierType" />
+    <result column="status" jdbcType="TINYINT" property="status" />
     <result column="create_id" jdbcType="BIGINT" property="createId" />
     <result column="update_id" jdbcType="BIGINT" property="updateId" />
     <result column="create_time" jdbcType="BIGINT" property="createTime" />
@@ -16,7 +17,7 @@
   </resultMap>
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
-    id, supplier_name, subject_name, `level`, supplier_type, create_id, update_id, create_time, 
+    id, supplier_name, subject_name, `level`, supplier_type, status, create_id, update_id, create_time,
     update_time
   </sql>
   <update id="updateBatch" parameterType="java.util.List">

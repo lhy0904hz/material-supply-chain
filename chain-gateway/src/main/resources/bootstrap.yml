@@ -22,3 +22,7 @@ spring:
           uri: lb://chain-user
           predicates:
             - Path=/v1/api/chain/admin/**
+        - id: chain-business
+          uri: lb://chain-business
+          predicates:
+            - Path=/v1/api/chain/business/**

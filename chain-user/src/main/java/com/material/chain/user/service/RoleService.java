@@ -1,11 +1,10 @@
 package com.material.chain.user.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.material.chain.common.doamin.vo.PageVo;
 import com.material.chain.user.domain.dto.RoleDTO;
 import com.material.chain.user.domain.dto.RolePageDTO;
-import com.material.chain.user.domain.dto.UserRoleDTO;
 import com.material.chain.user.domain.po.RolePo;
-import com.material.chain.user.domain.vo.PageVo;
 import com.material.chain.user.domain.vo.RoleListVo;
 
 import java.util.List;

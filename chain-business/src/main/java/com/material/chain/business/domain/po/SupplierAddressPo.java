@@ -9,13 +9,13 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
-    * 供应商表
+    * 供应商地址表
     */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@TableName(value = "t_supplier")
-public class SupplierPo {
+@TableName(value = "t_supplier_address")
+public class SupplierAddressPo {
     /**
      * id
      */
@@ -23,34 +23,58 @@ public class SupplierPo {
     private Long id;
 
     /**
-     * 供应商名称
+     * 供应商id
      */
-    @TableField(value = "supplier_name")
-    private String supplierName;
+    @TableField(value = "supplier_id")
+    private Long supplierId;
 
     /**
-     * 主体名称
+     * 省
      */
-    @TableField(value = "subject_name")
-    private String subjectName;
+    @TableField(value = "province")
+    private String province;
 
     /**
-     * 供应商等级 S A B C D
+     * 市
      */
-    @TableField(value = "`level`")
-    private String level;
+    @TableField(value = "city")
+    private String city;
 
     /**
-     * 供应商类型 1:私企 2:国企
+     * 区
      */
-    @TableField(value = "supplier_type")
-    private Integer supplierType;
+    @TableField(value = "area")
+    private String area;
 
     /**
-     * 供应商状态 0：正常 1：禁用
+     * 详细地址
      */
-    @TableField(value = "status")
-    private Integer status;
+    @TableField(value = "address")
+    private String address;
+
+    /**
+     * 邮编
+     */
+    @TableField(value = "zip_code")
+    private String zipCode;
+
+    /**
+     * 寄件人名称
+     */
+    @TableField(value = "sender_name")
+    private String senderName;
+
+    /**
+     * 寄件人手机号
+     */
+    @TableField(value = "sender_phone")
+    private String senderPhone;
+
+    /**
+     * 是否为默认地址 0:默认 1:非默认
+     */
+    @TableField(value = "is_default")
+    private Integer isDefault;
 
     /**
      * 创建人ID

@@ -1,4 +1,5 @@
 package com.material.chain.user.mapper;
+import java.util.Collection;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.material.chain.user.domain.po.RolePermissionPo;
@@ -11,4 +12,8 @@ public interface RolePermissionPoMapper extends BaseMapper<RolePermissionPo> {
     int updateBatchSelective(List<RolePermissionPo> list);
 
     int batchInsert(@Param("list") List<RolePermissionPo> list);
+
+    List<RolePermissionPo> findByRoleIds(@Param(value = "roleIds") List<Long> roleIds);
+
+
 }

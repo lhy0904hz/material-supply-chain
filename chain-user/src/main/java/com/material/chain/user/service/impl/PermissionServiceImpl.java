@@ -49,27 +49,12 @@ public class PermissionServiceImpl extends ServiceImpl<PermissionPoMapper, Permi
     @Override
     public List<PermissionVo> getPermissionTree() {
         LambdaQueryWrapper<PermissionPo> wrapper = Wrappers.lambdaQuery();
-        Long currentUserId = AppContextUtil.getCurrentUserId();
         wrapper.eq(PermissionPo::getStatus, StatusEnum.NORMAL.getCode());
         List<PermissionPo> permissionList = this.list(wrapper);
         if (CollectionUtil.isEmpty(permissionList)) {
             return Collections.emptyList();
         }
-
-        List<PermissionVo> permissionVoList = new ArrayList<>();
-        for (PermissionPo po : permissionList) {
-            if (po.getParentId() == 0) {
-                PermissionVo vo = new PermissionVo();
-                vo.setId(po.getId());
-                vo.setPermissionName(po.getName());
-                vo.setParentId(po.getParentId());
-                vo.setDescription(po.getDescription());
-                vo.setPermissionChildrenList(buildPermissionChildrenList(po.getId(), permissionList));
-                permissionVoList.add(vo);
-            }
-        }
-        log.info("当前用户id：{}，权限菜单：{}", currentUserId, JSON.toJSONString(permissionVoList));
-        return permissionVoList;
+        return buildPermissionList(permissionList);
     }
 
     /**
@@ -133,9 +118,7 @@ public class PermissionServiceImpl extends ServiceImpl<PermissionPoMapper, Permi
 
         //查询角色-菜单关联表
         List<Long> roleIds = userInfoVo.getRoleIds();
-        LambdaQueryWrapper<RolePermissionPo> wrapper = Wrappers.lambdaQuery();
-        wrapper.in(RolePermissionPo::getRoleId, roleIds);
-        List<RolePermissionPo> rolePermissionList = rolePermissionMapper.selectList(wrapper);
+        List<RolePermissionPo> rolePermissionList = rolePermissionMapper.findByRoleIds(roleIds);
         if (CollectionUtils.isEmpty(rolePermissionList)) {
             throw new ApiException("没有找到菜单，请联系管理员");
         }
@@ -149,9 +132,23 @@ public class PermissionServiceImpl extends ServiceImpl<PermissionPoMapper, Permi
         if (CollectionUtils.isEmpty(rolePermissionList)) {
             throw new ApiException("没有找到菜单，请联系管理员");
         }
+        return buildPermissionList(permissionList);
+    }
 
-
-        return null;
+    private List<PermissionVo> buildPermissionList(List<PermissionPo> permissionList) {
+        List<PermissionVo> permissionVoList = new ArrayList<>();
+        for (PermissionPo po : permissionList) {
+            if (po.getParentId() == 0) {
+                PermissionVo vo = new PermissionVo();
+                vo.setId(po.getId());
+                vo.setPermissionName(po.getName());
+                vo.setParentId(po.getParentId());
+                vo.setDescription(po.getDescription());
+                vo.setPermissionChildrenList(buildPermissionChildrenList(po.getId(), permissionList));
+                permissionVoList.add(vo);
+            }
+        }
+        return permissionVoList;
     }
 
     private List<PermissionVo> buildPermissionChildrenList(Long parentId, List<PermissionPo> permissionList) {

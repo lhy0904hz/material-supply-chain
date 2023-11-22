@@ -38,6 +38,9 @@ public class SupplierServiceImpl extends ServiceImpl<SupplierPoMapper, SupplierP
     @Autowired
     private SupplierAddressPoMapper supplierAddressPoMapper;
 
+    /**
+     * 分页列表
+     */
     @Override
     public PageVo<SupplierVo> pageList(SupplierDTO dto) {
         //查询供应商分页
@@ -103,7 +106,38 @@ public class SupplierServiceImpl extends ServiceImpl<SupplierPoMapper, SupplierP
         Long currentUserId = AppContextUtil.getCurrentUserId();
         long timeMillis = System.currentTimeMillis();
         //保存供应商信息
+        SupplierPo po = buildSupplierPo(dto, currentUserId, timeMillis);
+        this.save(po);
+        //保存供应商地址
+        saveSupplierAddress(dto.getAddressList(), po.getId(), currentUserId, timeMillis);
+        return true;
+    }
+
+    /**
+     * 编辑供应商
+     */
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public Boolean editSupplier(SupplierDTO dto) {
+        if (checkSupplierIsRepeat(dto.getSupplierName(), dto.getSupplierId())) {
+            throw new ApiException("供应商名称重复");
+        }
+        Long currentUserId = AppContextUtil.getCurrentUserId();
+        long timeMillis = System.currentTimeMillis();
+        //编辑供应商
+        SupplierPo po = buildSupplierPo(dto, currentUserId, timeMillis);
+        this.updateById(po);
+        //编辑供应商地址
+        supplierAddressPoMapper.updateBatch(buildSupplierAddressPo(dto.getAddressList(), po.getId(), currentUserId, timeMillis));
+        return null;
+    }
+
+    /**
+     * 封装供应商数据
+     */
+    private SupplierPo buildSupplierPo(SupplierDTO dto, Long currentUserId, long timeMillis) {
         SupplierPo po = new SupplierPo();
+        po.setId(dto.getSupplierId());
         po.setSupplierName(dto.getSupplierName());
         po.setLevel(dto.getLevel());
         po.setSupplierType(dto.getSupplierType());
@@ -113,19 +147,30 @@ public class SupplierServiceImpl extends ServiceImpl<SupplierPoMapper, SupplierP
         po.setCreateTime(timeMillis);
         po.setUpdateTime(timeMillis);
         po.setStatus(StatusEnum.NORMAL.getCode());
-        this.save(po);
-        //保存供应商地址
-        saveSupplierAddress(dto.getAddressList(), po.getId(), currentUserId, timeMillis);
-
-        return true;
+        return po;
     }
 
+    /**
+     * 保存供应商地址
+     * @param addressList 地址
+     * @param supplierId 供应商id
+     * @param currentUserId 当前用户id
+     * @param timeMillis 当前时间戳
+     */
     private void saveSupplierAddress(List<SupplierAddressDTO> addressList, Long supplierId, Long currentUserId, long timeMillis) {
         if (CollectionUtils.isEmpty(addressList)) {
             throw new ApiException("供应商地址不能为空");
         }
-        List<SupplierAddressPo> addressPos = addressList.stream().map(address -> {
+        supplierAddressPoMapper.batchInsert(buildSupplierAddressPo(addressList, supplierId, currentUserId, timeMillis));
+    }
+
+    /**
+     * 封装供应商地址数据
+     */
+    private List<SupplierAddressPo> buildSupplierAddressPo(List<SupplierAddressDTO> addressList, Long supplierId, Long currentUserId, long timeMillis) {
+        List<SupplierAddressPo> supplierAddressList = addressList.stream().map(address -> {
             SupplierAddressPo po = new SupplierAddressPo();
+            po.setId(address.getAddressId());
             po.setAddress(address.getAddress());
             po.setSupplierId(supplierId);
             po.setProvince(address.getProvince());
@@ -141,7 +186,11 @@ public class SupplierServiceImpl extends ServiceImpl<SupplierPoMapper, SupplierP
             po.setUpdateTime(timeMillis);
             return po;
         }).collect(Collectors.toList());
-        supplierAddressPoMapper.batchInsert(addressPos);
+        long count = supplierAddressList.stream().filter(address -> address.getIsDefault() == 0).count();
+        if (count != 1) {
+            throw new ApiException("只能设置一个默认地址");
+        }
+        return supplierAddressList;
     }
 
     /**

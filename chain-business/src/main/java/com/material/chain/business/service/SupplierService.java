@@ -13,5 +13,13 @@ public interface SupplierService extends IService<SupplierPo> {
      */
     PageVo<SupplierVo> pageList(SupplierDTO dto);
 
+    /**
+     * 新增供应商
+     */
     Boolean addSupplier(SupplierDTO dto);
+
+    /**
+     * 编辑供应商
+     */
+    Boolean editSupplier(SupplierDTO dto);
 }

@@ -32,4 +32,10 @@ public class SupplierController {
     public ApiResult<Boolean> add(@RequestBody SupplierDTO dto) {
         return ApiResult.success(supplierService.addSupplier(dto));
     }
+
+    @ApiOperation("编辑供应商")
+    @PostMapping(value = "edit")
+    public ApiResult<Boolean> editSupplier(@RequestBody SupplierDTO dto) {
+        return ApiResult.success(supplierService.editSupplier(dto));
+    }
 }

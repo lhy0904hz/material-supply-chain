@@ -6,16 +6,19 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.material.chain.base.exception.ApiException;
 import com.material.chain.base.page.PageResponse;
 import com.material.chain.base.page.PageUtil;
 import com.material.chain.user.UserConstant;
 import com.material.chain.user.domain.dto.RoleDTO;
 import com.material.chain.user.domain.dto.RolePageDTO;
+import com.material.chain.user.domain.dto.UserRoleDTO;
 import com.material.chain.user.domain.po.RolePo;
 import com.material.chain.user.domain.vo.PageVo;
 import com.material.chain.user.domain.vo.RoleListVo;
 import com.material.chain.user.mapper.RoleMapper;
 import com.material.chain.user.service.RoleService;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
@@ -87,5 +90,21 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, RolePo> implements 
         vo.setTotal(page.getTotal());
 
         return vo;
+    }
+
+    /**
+     * 根据用户ID获取角色
+     * @param userId 用户ID
+     * @return UserRoleDTO
+     */
+    @Override
+    public List<Long> getRoleIdsListByUserId(Long userId) {
+        LambdaQueryWrapper<RolePo> wrapper = Wrappers.lambdaQuery();
+        wrapper.eq(RolePo::getCreateId, userId);
+        List<RolePo> rolePoList = this.list(wrapper);
+        if (CollectionUtils.isEmpty(rolePoList)) {
+            throw new ApiException("无角色权限");
+        }
+        return rolePoList.stream().map(RolePo::getId).collect(Collectors.toList());
     }
 }

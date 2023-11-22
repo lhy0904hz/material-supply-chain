@@ -16,11 +16,13 @@ import com.material.chain.user.domain.po.UserPo;
 import com.material.chain.user.domain.vo.UserInfoResponse;
 import com.material.chain.user.enums.StatusEnum;
 import com.material.chain.user.mapper.UserPoMapper;
+import com.material.chain.user.service.RoleService;
 import com.material.chain.user.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
@@ -30,6 +32,9 @@ public class UserServiceImpl extends ServiceImpl<UserPoMapper, UserPo> implement
 
     @Autowired
     private UserPoMapper userPoMapper;
+
+    @Autowired
+    private RoleService roleService;
 
     @Autowired
     private RedisTemplateService redisTemplateService;
@@ -58,6 +63,10 @@ public class UserServiceImpl extends ServiceImpl<UserPoMapper, UserPo> implement
         UserInfoResponse response = new UserInfoResponse();
         response.setAccount(userPo.getAccount());
         response.setUserName(userPo.getUserName());
+
+        List<Long> roleIds = roleService.getRoleIdsListByUserId(userPo.getId());
+        response.setRoleIds(roleIds);
+
         //token有效期2小时
         String token = JwtUtil.buildJWT(JSON.toJSONString(response), String.valueOf(userPo.getId()), 3600 * 24);
         response.setToken(token);

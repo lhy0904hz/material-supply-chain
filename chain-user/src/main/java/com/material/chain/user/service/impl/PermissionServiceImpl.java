@@ -2,11 +2,14 @@ package com.material.chain.user.service.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.material.chain.base.exception.ApiException;
 import com.material.chain.base.redis.RedisTemplateService;
 import com.material.chain.base.utils.AppContextUtil;
+import com.material.chain.common.constant.RedisKey;
 import com.material.chain.common.enums.StatusEnum;
 import com.material.chain.user.domain.dto.PermissionDTO;
 import com.material.chain.user.domain.dto.UserRoleDTO;
@@ -14,11 +17,13 @@ import com.material.chain.user.domain.po.PermissionPo;
 import com.material.chain.user.domain.po.RolePermissionPo;
 import com.material.chain.user.domain.po.RoleUserPo;
 import com.material.chain.user.domain.vo.PermissionVo;
+import com.material.chain.user.domain.vo.UserInfoResponse;
 import com.material.chain.user.mapper.PermissionPoMapper;
 import com.material.chain.user.mapper.RolePermissionPoMapper;
 import com.material.chain.user.mapper.RoleUserPoMapper;
 import com.material.chain.user.service.PermissionService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,6 +39,8 @@ public class PermissionServiceImpl extends ServiceImpl<PermissionPoMapper, Permi
     private RolePermissionPoMapper rolePermissionMapper;
     @Autowired
     private RoleUserPoMapper roleUserPoMapper;
+    @Autowired
+    private RedisTemplateService redisTemplateService;
 
     /**
      * 获取菜单树
@@ -118,7 +125,31 @@ public class PermissionServiceImpl extends ServiceImpl<PermissionPoMapper, Permi
      */
     @Override
     public List<PermissionVo> getPermissionByCurrentUserId() {
-        Long currentUserId = AppContextUtil.getCurrentUserId();
+        Object user = redisTemplateService.get(String.format(RedisKey.ADMIN_USER_KEY, AppContextUtil.getCurrentUserId()));
+        UserInfoResponse userInfoVo = JSONObject.parseObject(String.valueOf(user), UserInfoResponse.class);
+        if (Objects.isNull(userInfoVo)) {
+            throw new ApiException("token已失效，请重新登录");
+        }
+
+        //查询角色-菜单关联表
+        List<Long> roleIds = userInfoVo.getRoleIds();
+        LambdaQueryWrapper<RolePermissionPo> wrapper = Wrappers.lambdaQuery();
+        wrapper.in(RolePermissionPo::getRoleId, roleIds);
+        List<RolePermissionPo> rolePermissionList = rolePermissionMapper.selectList(wrapper);
+        if (CollectionUtils.isEmpty(rolePermissionList)) {
+            throw new ApiException("没有找到菜单，请联系管理员");
+        }
+
+        //拿到菜单id集合
+        List<Long> permissionIds = rolePermissionList.stream().map(RolePermissionPo::getPermissionId).distinct().collect(Collectors.toList());
+        //获取菜单数据
+        LambdaQueryWrapper<PermissionPo> permissionWrapper = Wrappers.lambdaQuery();
+        permissionWrapper.in(PermissionPo::getId, permissionIds);
+        List<PermissionPo> permissionList = this.list(permissionWrapper);
+        if (CollectionUtils.isEmpty(rolePermissionList)) {
+            throw new ApiException("没有找到菜单，请联系管理员");
+        }
+
 
         return null;
     }

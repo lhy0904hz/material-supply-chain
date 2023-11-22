@@ -1,4 +1,4 @@
-package com.material.chain.user.components;
+package com.material.chain.base.redis;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -20,9 +20,11 @@ import java.util.concurrent.TimeUnit;
 @Component
 public class RedisTemplateService {
 
-    @Autowired
-    @Qualifier("chainRedisTemplate")
     private RedisTemplate<String, Object> redisTemplate;
+
+    public RedisTemplateService(RedisTemplate<String, Object> redisTemplate) {
+        this.redisTemplate = redisTemplate;
+    }
 
     /**
      * 给一个指定的 key 值附加过期时间

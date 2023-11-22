@@ -4,13 +4,13 @@ import com.material.chain.common.utils.ApiResult;
 import com.material.chain.user.domain.dto.RoleDTO;
 import com.material.chain.user.domain.dto.RolePageDTO;
 import com.material.chain.user.domain.vo.PageVo;
+import com.material.chain.user.domain.vo.PermissionVo;
 import com.material.chain.user.domain.vo.RoleListVo;
 import com.material.chain.user.service.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * 角色管理

@@ -7,7 +7,7 @@ import com.material.chain.common.constant.RedisKey;
 import com.material.chain.common.enums.GlobalStatusEnum;
 import com.material.chain.common.utils.JwtUtil;
 import com.material.chain.gateway.components.RedisTemplateService;
-import com.material.chain.gateway.domain.vo.UserInfoVo;
+import com.material.chain.gateway.domain.vo.UserInfoResponse;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import lombok.extern.slf4j.Slf4j;
@@ -94,21 +94,20 @@ public class TokenFilter implements GlobalFilter, Ordered {
      * 刷新 token以及缓存
      */
     private Mono<Void> refreshToken(ServerHttpResponse response, String userId, String oldToken) {
-        //判断过期时间
         String tokenKey = String.format(RedisKey.ADMIN_USER_KEY, userId);
         long expireTime = redisTemplateService.getTime(tokenKey);
+        //判断页面传过来的token是否跟redis一致
+        Object user = redisTemplateService.get(tokenKey);
+        UserInfoResponse userInfoVo = JSONObject.parseObject(String.valueOf(user), UserInfoResponse.class);
+        if (Objects.isNull(userInfoVo)) {
+            return tokenIsExpire(response);
+        }
+        if (!StringUtils.equals(oldToken, userInfoVo.getToken())) {
+            return tokenIsExpire(response);
+        }
+        //判断过期时间
         if (expireTime < 2000L) {
-            Object user = redisTemplateService.get(tokenKey);
-            UserInfoVo userInfoVo = JSONObject.parseObject(String.valueOf(user), UserInfoVo.class);
-            if (Objects.isNull(userInfoVo)) {
-                return tokenIsExpire(response);
-            }
-            //判断页面传过来的token是否跟redis一致
-            if (!StringUtils.equals(oldToken, userInfoVo.getToken())) {
-                return tokenIsExpire(response);
-            }
             //token有效期2小时
-            userInfoVo.setUserId(Long.parseLong(userId));
             String newToken = JwtUtil.buildJWT(JSON.toJSONString(userInfoVo), userId, 3600 * 24);
             userInfoVo.setToken(newToken);
             redisTemplateService.set(tokenKey, JSONObject.toJSONString(userInfoVo), 3600 * 24L, TimeUnit.SECONDS);

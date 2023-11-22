@@ -106,7 +106,7 @@ public class RedisTemplateService {
      * @return true成功 false 失败
      */
     public void set(String key, String value, long time, TimeUnit timeUnit) {
-            redisTemplate.opsForValue().set(key, value, time, timeUnit);
+        redisTemplate.opsForValue().set(key, value, time, timeUnit);
     }
 
     /**

@@ -1,4 +1,4 @@
-package com.material.chain.user.utils;
+package com.material.chain.base.utils;
 
 import com.material.chain.base.exception.ApiException;
 import com.material.chain.common.enums.GlobalStatusEnum;

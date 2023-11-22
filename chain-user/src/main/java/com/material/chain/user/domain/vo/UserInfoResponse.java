@@ -6,8 +6,8 @@ import lombok.Data;
 @Data
 public class UserInfoResponse {
 
-    @ApiModelProperty(value = "用户id")
-    private Long userId;
+    @ApiModelProperty(value = "账号")
+    private String account;
 
     @ApiModelProperty(value = "用户名称")
     private String userName;

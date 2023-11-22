@@ -6,13 +6,13 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.material.chain.base.exception.ApiException;
+import com.material.chain.base.redis.RedisTemplateService;
+import com.material.chain.base.utils.AppContextUtil;
 import com.material.chain.common.constant.RedisKey;
 import com.material.chain.common.utils.JwtUtil;
-import com.material.chain.user.components.RedisTemplateService;
 import com.material.chain.user.convert.UserConvert;
 import com.material.chain.user.domain.dto.LoginDTO;
 import com.material.chain.user.domain.po.UserPo;
-import com.material.chain.user.domain.vo.LoginResponse;
 import com.material.chain.user.domain.vo.UserInfoResponse;
 import com.material.chain.user.enums.StatusEnum;
 import com.material.chain.user.mapper.UserPoMapper;
@@ -41,9 +41,8 @@ public class UserServiceImpl extends ServiceImpl<UserPoMapper, UserPo> implement
      * @return LoginResponse
      */
     @Override
-    public LoginResponse login(LoginDTO dto) {
+    public UserInfoResponse login(LoginDTO dto) {
         log.info("[登录]：入参：{}", JSON.toJSONString(dto));
-        LoginResponse loginResponse = new LoginResponse();
         String loginPassword = UserConvert.decryptionByPassword(dto.getPassword());
         LambdaQueryWrapper<UserPo> wrapper = Wrappers.lambdaQuery();
         wrapper.eq(UserPo::getAccount, dto.getAccount())
@@ -57,14 +56,22 @@ public class UserServiceImpl extends ServiceImpl<UserPoMapper, UserPo> implement
             throw new ApiException("账号或密码错误");
         }
         UserInfoResponse response = new UserInfoResponse();
-        response.setUserId(userPo.getId());
+        response.setAccount(userPo.getAccount());
         response.setUserName(userPo.getUserName());
         //token有效期2小时
         String token = JwtUtil.buildJWT(JSON.toJSONString(response), String.valueOf(userPo.getId()), 3600 * 24);
         response.setToken(token);
-        loginResponse.setToken(token);
         redisTemplateService.set(String.format(RedisKey.ADMIN_USER_KEY, userPo.getId()), JSONObject.toJSONString(response), 3600 * 24L, TimeUnit.SECONDS);
 
-        return loginResponse;
+        return response;
+    }
+
+    /**
+     * 退出登录
+     * @return Boolean
+     */
+    @Override
+    public Boolean logout() {
+        return redisTemplateService.del(String.format(RedisKey.ADMIN_USER_KEY, AppContextUtil.getCurrentUserId()));
     }
 }

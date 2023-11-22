@@ -1,29 +1,27 @@
-package com.material.chain.user.config;
+package com.material.chain.base.configuration;
 
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.alibaba.fastjson.support.config.FastJsonConfig;
 import com.alibaba.fastjson.support.spring.FastJsonRedisSerializer;
+import com.material.chain.base.redis.RedisTemplateService;
+import org.springframework.boot.autoconfigure.AutoConfigureBefore;
+import org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
-/**
- * @Classname RedisConfig
- * @Description Redis配置
- * @Date 2019/12/18 14:16
- * @Created by LiuHaoYang
- */
 @Configuration
-public class RedisConfig {
+@AutoConfigureBefore(RedisAutoConfiguration.class)
+public class RedisConfiguration {
 
     /**
      * redisTemplate 序列化使用的jdkSerializeable, 存储二进制字节码, 所以自定义序列化类
      * @param lettuceConnectionFactory redis连接工厂
      * @return
      */
-    @Bean(name = "chainRedisTemplate")
+    @Bean
     public RedisTemplate<String, Object> redisTemplate(LettuceConnectionFactory lettuceConnectionFactory) {
         RedisTemplate<String, Object> template = new RedisTemplate<>();
         template.setConnectionFactory(lettuceConnectionFactory);
@@ -43,5 +41,10 @@ public class RedisConfig {
         template.setHashValueSerializer(fastJsonRedisSerializer);
         template.afterPropertiesSet();
         return template;
+    }
+
+    @Bean
+    public RedisTemplateService redisTemplateService(RedisTemplate<String, Object> redisTemplate) {
+        return new RedisTemplateService(redisTemplate);
     }
 }

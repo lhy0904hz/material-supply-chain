@@ -6,6 +6,7 @@ import com.material.chain.user.domain.dto.PermissionDTO;
 import com.material.chain.user.domain.dto.UserRoleDTO;
 import com.material.chain.user.domain.vo.LoginResponse;
 import com.material.chain.user.domain.vo.PermissionVo;
+import com.material.chain.user.domain.vo.UserInfoResponse;
 import com.material.chain.user.service.PermissionService;
 import com.material.chain.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +31,7 @@ public class UserController {
      * @return LoginResponse
      */
     @PostMapping(value = "login")
-    public ApiResult<LoginResponse> login(@RequestBody LoginDTO dto) {
+    public ApiResult<UserInfoResponse> login(@RequestBody LoginDTO dto) {
         return ApiResult.success(userService.login(dto));
     }
 
@@ -67,6 +68,15 @@ public class UserController {
      */
     @GetMapping(value = "logout")
     public ApiResult<Boolean> logout() {
-        return ApiResult.success(permissionService.logout());
+        return ApiResult.success(userService.logout());
+    }
+
+    /**
+     * 根据当前用户获取菜单树
+     * @return List<PermissionVo>
+     */
+    @GetMapping(value = "getPermissionByCurrentUserId")
+    public ApiResult<List<PermissionVo>> getPermissionByCurrentUserId() {
+        return ApiResult.success(permissionService.getPermissionByCurrentUserId());
     }
 }

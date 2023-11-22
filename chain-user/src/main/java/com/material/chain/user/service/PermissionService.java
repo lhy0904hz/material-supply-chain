@@ -29,8 +29,8 @@ public interface PermissionService extends IService<PermissionPo> {
     Boolean saveUserRole(UserRoleDTO dto);
 
     /**
-     * 退出登录
-     * @return Boolean
+     * 根据当前用户获取菜单树
+     * @return List<PermissionVo>
      */
-    Boolean logout();
+    List<PermissionVo> getPermissionByCurrentUserId();
 }

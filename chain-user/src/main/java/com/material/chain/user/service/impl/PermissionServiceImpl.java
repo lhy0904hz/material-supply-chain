@@ -5,9 +5,9 @@ import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.material.chain.common.constant.RedisKey;
+import com.material.chain.base.redis.RedisTemplateService;
+import com.material.chain.base.utils.AppContextUtil;
 import com.material.chain.common.enums.StatusEnum;
-import com.material.chain.user.components.RedisTemplateService;
 import com.material.chain.user.domain.dto.PermissionDTO;
 import com.material.chain.user.domain.dto.UserRoleDTO;
 import com.material.chain.user.domain.po.PermissionPo;
@@ -18,8 +18,6 @@ import com.material.chain.user.mapper.PermissionPoMapper;
 import com.material.chain.user.mapper.RolePermissionPoMapper;
 import com.material.chain.user.mapper.RoleUserPoMapper;
 import com.material.chain.user.service.PermissionService;
-import com.material.chain.user.service.RoleService;
-import com.material.chain.user.utils.AppContextUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,13 +31,9 @@ import java.util.stream.Collectors;
 public class PermissionServiceImpl extends ServiceImpl<PermissionPoMapper, PermissionPo> implements PermissionService {
 
     @Autowired
-    private RoleService roleService;
-    @Autowired
     private RolePermissionPoMapper rolePermissionMapper;
     @Autowired
     private RoleUserPoMapper roleUserPoMapper;
-    @Autowired
-    private RedisTemplateService redisTemplateService;
 
     /**
      * 获取菜单树
@@ -119,12 +113,14 @@ public class PermissionServiceImpl extends ServiceImpl<PermissionPoMapper, Permi
     }
 
     /**
-     * 退出登录
-     * @return Boolean
+     * 根据当前用户获取菜单树
+     * @return List<PermissionVo>
      */
     @Override
-    public Boolean logout() {
-        return redisTemplateService.del(String.format(RedisKey.ADMIN_USER_KEY, AppContextUtil.getCurrentUserId()));
+    public List<PermissionVo> getPermissionByCurrentUserId() {
+        Long currentUserId = AppContextUtil.getCurrentUserId();
+
+        return null;
     }
 
     private List<PermissionVo> buildPermissionChildrenList(Long parentId, List<PermissionPo> permissionList) {

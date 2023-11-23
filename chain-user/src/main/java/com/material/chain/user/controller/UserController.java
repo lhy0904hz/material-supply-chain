@@ -38,8 +38,8 @@ public class UserController {
      * 获取菜单树
      * @return List<PermissionVo>
      */
-    @GetMapping(value = "getCurrentPermissionList")
-    public ApiResult<List<PermissionVo>> getCurrentPermissionList() {
+    @GetMapping(value = "getPermissionTree")
+    public ApiResult<List<PermissionVo>> getPermissionTree() {
         return ApiResult.success(permissionService.getPermissionTree());
     }
 

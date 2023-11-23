@@ -49,6 +49,7 @@ public class MaterialServiceImpl extends ServiceImpl<MaterialPoMapper, MaterialP
             MaterialPo po = new MaterialPo();
             po.setSupplierId(dto.getSupplierId());
             po.setMaterialCode(materialDTO.getMaterialCode());
+            po.setSubsection(materialDTO.getSubsection());
             po.setLength(materialDTO.getLength());
             po.setWidth(materialDTO.getWidth());
             po.setMachining(materialDTO.getMachining());

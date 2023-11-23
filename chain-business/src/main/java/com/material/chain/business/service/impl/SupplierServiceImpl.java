@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.material.chain.base.exception.ApiException;
 import com.material.chain.base.utils.AppContextUtil;
-import com.material.chain.business.SupplierEnum;
+import com.material.chain.business.enums.SupplierEnum;
 import com.material.chain.business.domain.dto.SupplierAddressDTO;
 import com.material.chain.business.domain.dto.SupplierDTO;
 import com.material.chain.business.domain.po.SupplierAddressPo;

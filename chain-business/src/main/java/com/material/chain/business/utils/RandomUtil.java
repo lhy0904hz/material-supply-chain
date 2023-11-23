@@ -1,5 +1,7 @@
 package com.material.chain.business.utils;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Random;
 
 public class RandomUtil {
@@ -21,5 +23,23 @@ public class RandomUtil {
         Random random = new Random();
         char randomLetter = (char) (random.nextInt(26) + 'A');
         return randomLetter;
+    }
+
+    public static String generatePurchaseNo() {
+        // 获取当前时间
+        LocalDateTime now = LocalDateTime.now();
+
+        // 格式化时间
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHssmm");
+
+        // 构建时间部分
+        String timePart = now.format(formatter);
+
+        // 生成6位随机数
+        Random random = new Random();
+        int randomValue = random.nextInt(900000) + 100000; // 生成100000到999999之间的随机数
+
+        // 构建最终字符串
+        return  "P" + timePart + randomValue;
     }
 }

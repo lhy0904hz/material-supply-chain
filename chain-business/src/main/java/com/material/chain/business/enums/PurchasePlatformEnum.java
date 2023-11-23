@@ -9,8 +9,8 @@ import java.util.Arrays;
 @AllArgsConstructor
 public enum PurchasePlatformEnum {
 
-    INTERNAL("internal", "国内采购单", ""),
-    GLOBAL("global", "国际采购单", "");
+    INTERNAL("internal", "国内采购单", "internalPurchaseServiceImpl"),
+    GLOBAL("global", "国际采购单", "globalPurchaseServiceImpl");
 
     private String type;
 

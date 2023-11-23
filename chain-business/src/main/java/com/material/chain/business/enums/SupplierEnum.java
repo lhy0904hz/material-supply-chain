@@ -1,4 +1,4 @@
-package com.material.chain.business;
+package com.material.chain.business.enums;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

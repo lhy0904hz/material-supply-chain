@@ -20,7 +20,7 @@ public class GlobalPurchaseOrderPo {
     /**
      * id
      */
-    @TableId(value = "id", type = IdType.INPUT)
+    @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 
     /**
@@ -81,7 +81,7 @@ public class GlobalPurchaseOrderPo {
      * 支付方式
      */
     @TableField(value = "pay_type")
-    private Byte payType;
+    private Integer payType;
 
     /**
      * 支付时间

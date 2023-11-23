@@ -1,3 +1,4 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
   com.material.chain.base.configuration.InterceptorAutoConfiguration,\
-  com.material.chain.base.configuration.RedisConfiguration
+  com.material.chain.base.configuration.RedisConfiguration,\
+  com.material.chain.base.configuration.ContextAutoConfiguration

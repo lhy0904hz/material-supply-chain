@@ -1,7 +1,5 @@
 package com.material.chain.business.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.material.chain.base.exception.ApiException;
 import com.material.chain.base.utils.AppContextUtil;
@@ -9,7 +7,6 @@ import com.material.chain.business.domain.dto.MaterialDTO;
 import com.material.chain.business.domain.dto.SupplierMaterialDTO;
 import com.material.chain.business.domain.po.MaterialInventoryPo;
 import com.material.chain.business.domain.po.MaterialPo;
-import com.material.chain.business.domain.po.SupplierPo;
 import com.material.chain.business.domain.vo.MaterialGenerateVo;
 import com.material.chain.business.mapper.MaterialInventoryPoMapper;
 import com.material.chain.business.mapper.MaterialPoMapper;

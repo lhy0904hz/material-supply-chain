@@ -1,4 +1,5 @@
 package com.material.chain.business.mapper;
+import java.util.Collection;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.material.chain.business.domain.po.MaterialInventoryPo;
@@ -11,4 +12,8 @@ public interface MaterialInventoryPoMapper extends BaseMapper<MaterialInventoryP
     int updateBatchSelective(List<MaterialInventoryPo> list);
 
     int batchInsert(@Param("list") List<MaterialInventoryPo> list);
+
+    List<MaterialInventoryPo> findAllInMaterialIds(@Param("ids")Collection<Long> ids);
+
+
 }

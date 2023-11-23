@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.material.chain.business.mapper.GlobalPurchaseOrderPoMapper">
+  <resultMap id="BaseResultMap" type="com.material.chain.business.domain.po.GlobalPurchaseOrderPo">
+    <!--@mbg.generated-->
+    <!--@Table t_global_purchase_order-->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="oreder_no" jdbcType="VARCHAR" property="orederNo" />
+    <result column="supplier_id" jdbcType="BIGINT" property="supplierId" />
+    <result column="price_total" jdbcType="DECIMAL" property="priceTotal" />
+    <result column="quantity_total" jdbcType="INTEGER" property="quantityTotal" />
+    <result column="logistics_no" jdbcType="VARCHAR" property="logisticsNo" />
+    <result column="currency" jdbcType="VARCHAR" property="currency" />
+    <result column="country_code" jdbcType="VARCHAR" property="countryCode" />
+    <result column="order_status" jdbcType="INTEGER" property="orderStatus" />
+    <result column="logistics_status" jdbcType="INTEGER" property="logisticsStatus" />
+    <result column="pay_type" jdbcType="TINYINT" property="payType" />
+    <result column="pay_time" jdbcType="BIGINT" property="payTime" />
+    <result column="cancel_time" jdbcType="BIGINT" property="cancelTime" />
+    <result column="create_time" jdbcType="BIGINT" property="createTime" />
+    <result column="update_time" jdbcType="BIGINT" property="updateTime" />
+    <result column="create_id" jdbcType="BIGINT" property="createId" />
+    <result column="update_id" jdbcType="BIGINT" property="updateId" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, oreder_no, supplier_id, price_total, quantity_total, logistics_no, currency, 
+    country_code, order_status, logistics_status, pay_type, pay_time, cancel_time, create_time, 
+    update_time, create_id, update_id
+  </sql>
+  <update id="updateBatch" parameterType="java.util.List">
+    <!--@mbg.generated-->
+    update t_global_purchase_order
+    <trim prefix="set" suffixOverrides=",">
+      <trim prefix="oreder_no = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.orederNo,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="supplier_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.supplierId,jdbcType=BIGINT}
+        </foreach>
+      </trim>
+      <trim prefix="price_total = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.priceTotal,jdbcType=DECIMAL}
+        </foreach>
+      </trim>
+      <trim prefix="quantity_total = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.quantityTotal,jdbcType=INTEGER}
+        </foreach>
+      </trim>
+      <trim prefix="logistics_no = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.logisticsNo,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="currency = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.currency,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="country_code = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.countryCode,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="order_status = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.orderStatus,jdbcType=INTEGER}
+        </foreach>
+      </trim>
+      <trim prefix="logistics_status = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.logisticsStatus,jdbcType=INTEGER}
+        </foreach>
+      </trim>
+      <trim prefix="pay_type = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.payType,jdbcType=TINYINT}
+        </foreach>
+      </trim>
+      <trim prefix="pay_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.payTime,jdbcType=BIGINT}
+        </foreach>
+      </trim>
+      <trim prefix="cancel_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.cancelTime,jdbcType=BIGINT}
+        </foreach>
+      </trim>
+      <trim prefix="create_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.createTime,jdbcType=BIGINT}
+        </foreach>
+      </trim>
+      <trim prefix="update_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.updateTime,jdbcType=BIGINT}
+        </foreach>
+      </trim>
+      <trim prefix="create_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.createId,jdbcType=BIGINT}
+        </foreach>
+      </trim>
+      <trim prefix="update_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.updateId,jdbcType=BIGINT}
+        </foreach>
+      </trim>
+    </trim>
+    where id in
+    <foreach close=")" collection="list" item="item" open="(" separator=", ">
+      #{item.id,jdbcType=BIGINT}
+    </foreach>
+  </update>
+  <update id="updateBatchSelective" parameterType="java.util.List">
+    <!--@mbg.generated-->
+    update t_global_purchase_order
+    <trim prefix="set" suffixOverrides=",">
+      <trim prefix="oreder_no = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.orederNo != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.orederNo,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="supplier_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.supplierId != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.supplierId,jdbcType=BIGINT}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="price_total = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.priceTotal != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.priceTotal,jdbcType=DECIMAL}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="quantity_total = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.quantityTotal != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.quantityTotal,jdbcType=INTEGER}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="logistics_no = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.logisticsNo != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.logisticsNo,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="currency = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.currency != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.currency,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="country_code = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.countryCode != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.countryCode,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="order_status = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.orderStatus != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.orderStatus,jdbcType=INTEGER}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="logistics_status = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.logisticsStatus != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.logisticsStatus,jdbcType=INTEGER}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="pay_type = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.payType != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.payType,jdbcType=TINYINT}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="pay_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.payTime != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.payTime,jdbcType=BIGINT}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="cancel_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.cancelTime != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.cancelTime,jdbcType=BIGINT}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="create_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.createTime != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.createTime,jdbcType=BIGINT}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="update_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.updateTime != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.updateTime,jdbcType=BIGINT}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="create_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.createId != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.createId,jdbcType=BIGINT}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="update_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.updateId != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.updateId,jdbcType=BIGINT}
+          </if>
+        </foreach>
+      </trim>
+    </trim>
+    where id in
+    <foreach close=")" collection="list" item="item" open="(" separator=", ">
+      #{item.id,jdbcType=BIGINT}
+    </foreach>
+  </update>
+  <insert id="batchInsert" keyColumn="id" keyProperty="id" parameterType="map" useGeneratedKeys="true">
+    <!--@mbg.generated-->
+    insert into t_global_purchase_order
+    (oreder_no, supplier_id, price_total, quantity_total, logistics_no, currency, country_code, 
+      order_status, logistics_status, pay_type, pay_time, cancel_time, create_time, update_time, 
+      create_id, update_id)
+    values
+    <foreach collection="list" item="item" separator=",">
+      (#{item.orederNo,jdbcType=VARCHAR}, #{item.supplierId,jdbcType=BIGINT}, #{item.priceTotal,jdbcType=DECIMAL}, 
+        #{item.quantityTotal,jdbcType=INTEGER}, #{item.logisticsNo,jdbcType=VARCHAR}, #{item.currency,jdbcType=VARCHAR}, 
+        #{item.countryCode,jdbcType=VARCHAR}, #{item.orderStatus,jdbcType=INTEGER}, #{item.logisticsStatus,jdbcType=INTEGER}, 
+        #{item.payType,jdbcType=TINYINT}, #{item.payTime,jdbcType=BIGINT}, #{item.cancelTime,jdbcType=BIGINT}, 
+        #{item.createTime,jdbcType=BIGINT}, #{item.updateTime,jdbcType=BIGINT}, #{item.createId,jdbcType=BIGINT}, 
+        #{item.updateId,jdbcType=BIGINT})
+    </foreach>
+  </insert>
+</mapper>

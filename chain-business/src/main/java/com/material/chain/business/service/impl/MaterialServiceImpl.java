@@ -8,6 +8,7 @@ import com.material.chain.business.domain.dto.SupplierMaterialDTO;
 import com.material.chain.business.domain.po.MaterialInventoryPo;
 import com.material.chain.business.domain.po.MaterialPo;
 import com.material.chain.business.domain.vo.MaterialGenerateVo;
+import com.material.chain.business.domain.vo.MaterialInventoryVo;
 import com.material.chain.business.mapper.MaterialInventoryPoMapper;
 import com.material.chain.business.mapper.MaterialPoMapper;
 import com.material.chain.business.service.MaterialService;
@@ -126,5 +127,18 @@ public class MaterialServiceImpl extends ServiceImpl<MaterialPoMapper, MaterialP
         vo.setMaterialName("T型材");
         vo.setMaterialCodeList(Arrays.asList(firstCode.toString(), secondCode.toString()));
         return vo;
+    }
+
+    /**
+     * 根据id集合查询物料库存
+     */
+    @Override
+    public List<MaterialInventoryPo> getMaterialInventoryByIds(List<Long> materialIds) {
+        return materialInventoryPoMapper.findAllInMaterialIds(materialIds);
+    }
+
+    @Override
+    public MaterialPo getMaterialCodeById(Long id) {
+        return materialPoMapper.selectById(id);
     }
 }

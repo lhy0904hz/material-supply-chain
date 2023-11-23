@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.material.chain.business.mapper.InternalPurchaseItemPoMapper">
+  <resultMap id="BaseResultMap" type="com.material.chain.business.domain.po.InternalPurchaseItemPo">
+    <!--@mbg.generated-->
+    <!--@Table t_internal_purchase_item-->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="purchase_id" jdbcType="VARCHAR" property="purchaseId" />
+    <result column="material_id" jdbcType="BIGINT" property="materialId" />
+    <result column="supplier_id" jdbcType="BIGINT" property="supplierId" />
+    <result column="material_name" jdbcType="VARCHAR" property="materialName" />
+    <result column="thickness" jdbcType="INTEGER" property="thickness" />
+    <result column="width" jdbcType="INTEGER" property="width" />
+    <result column="length" jdbcType="INTEGER" property="length" />
+    <result column="weight" jdbcType="DECIMAL" property="weight" />
+    <result column="unit_price" jdbcType="DECIMAL" property="unitPrice" />
+    <result column="quantity" jdbcType="INTEGER" property="quantity" />
+    <result column="price_total" jdbcType="DECIMAL" property="priceTotal" />
+    <result column="create_id" jdbcType="BIGINT" property="createId" />
+    <result column="update_id" jdbcType="BIGINT" property="updateId" />
+    <result column="create_time" jdbcType="BIGINT" property="createTime" />
+    <result column="update_time" jdbcType="BIGINT" property="updateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, purchase_id, material_id, supplier_id, material_name, thickness, width, `length`, 
+    weight, unit_price, quantity, price_total, create_id, update_id, create_time, update_time
+  </sql>
+  <update id="updateBatch" parameterType="java.util.List">
+    <!--@mbg.generated-->
+    update t_internal_purchase_item
+    <trim prefix="set" suffixOverrides=",">
+      <trim prefix="purchase_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.purchaseId,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="material_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.materialId,jdbcType=BIGINT}
+        </foreach>
+      </trim>
+      <trim prefix="supplier_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.supplierId,jdbcType=BIGINT}
+        </foreach>
+      </trim>
+      <trim prefix="material_name = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.materialName,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="thickness = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.thickness,jdbcType=INTEGER}
+        </foreach>
+      </trim>
+      <trim prefix="width = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.width,jdbcType=INTEGER}
+        </foreach>
+      </trim>
+      <trim prefix="`length` = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.length,jdbcType=INTEGER}
+        </foreach>
+      </trim>
+      <trim prefix="weight = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.weight,jdbcType=DECIMAL}
+        </foreach>
+      </trim>
+      <trim prefix="unit_price = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.unitPrice,jdbcType=DECIMAL}
+        </foreach>
+      </trim>
+      <trim prefix="quantity = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.quantity,jdbcType=INTEGER}
+        </foreach>
+      </trim>
+      <trim prefix="price_total = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.priceTotal,jdbcType=DECIMAL}
+        </foreach>
+      </trim>
+      <trim prefix="create_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.createId,jdbcType=BIGINT}
+        </foreach>
+      </trim>
+      <trim prefix="update_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.updateId,jdbcType=BIGINT}
+        </foreach>
+      </trim>
+      <trim prefix="create_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.createTime,jdbcType=BIGINT}
+        </foreach>
+      </trim>
+      <trim prefix="update_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.updateTime,jdbcType=BIGINT}
+        </foreach>
+      </trim>
+    </trim>
+    where id in
+    <foreach close=")" collection="list" item="item" open="(" separator=", ">
+      #{item.id,jdbcType=BIGINT}
+    </foreach>
+  </update>
+  <update id="updateBatchSelective" parameterType="java.util.List">
+    <!--@mbg.generated-->
+    update t_internal_purchase_item
+    <trim prefix="set" suffixOverrides=",">
+      <trim prefix="purchase_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.purchaseId != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.purchaseId,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="material_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.materialId != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.materialId,jdbcType=BIGINT}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="supplier_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.supplierId != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.supplierId,jdbcType=BIGINT}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="material_name = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.materialName != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.materialName,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="thickness = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.thickness != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.thickness,jdbcType=INTEGER}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="width = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.width != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.width,jdbcType=INTEGER}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="`length` = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.length != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.length,jdbcType=INTEGER}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="weight = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.weight != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.weight,jdbcType=DECIMAL}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="unit_price = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.unitPrice != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.unitPrice,jdbcType=DECIMAL}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="quantity = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.quantity != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.quantity,jdbcType=INTEGER}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="price_total = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.priceTotal != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.priceTotal,jdbcType=DECIMAL}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="create_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.createId != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.createId,jdbcType=BIGINT}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="update_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.updateId != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.updateId,jdbcType=BIGINT}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="create_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.createTime != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.createTime,jdbcType=BIGINT}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="update_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.updateTime != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.updateTime,jdbcType=BIGINT}
+          </if>
+        </foreach>
+      </trim>
+    </trim>
+    where id in
+    <foreach close=")" collection="list" item="item" open="(" separator=", ">
+      #{item.id,jdbcType=BIGINT}
+    </foreach>
+  </update>
+  <insert id="batchInsert" keyColumn="id" keyProperty="id" parameterType="map" useGeneratedKeys="true">
+    <!--@mbg.generated-->
+    insert into t_internal_purchase_item
+    (purchase_id, material_id, supplier_id, material_name, thickness, width, `length`, 
+      weight, unit_price, quantity, price_total, create_id, update_id, create_time, update_time
+      )
+    values
+    <foreach collection="list" item="item" separator=",">
+      (#{item.purchaseId,jdbcType=VARCHAR}, #{item.materialId,jdbcType=BIGINT}, #{item.supplierId,jdbcType=BIGINT}, 
+        #{item.materialName,jdbcType=VARCHAR}, #{item.thickness,jdbcType=INTEGER}, #{item.width,jdbcType=INTEGER}, 
+        #{item.length,jdbcType=INTEGER}, #{item.weight,jdbcType=DECIMAL}, #{item.unitPrice,jdbcType=DECIMAL}, 
+        #{item.quantity,jdbcType=INTEGER}, #{item.priceTotal,jdbcType=DECIMAL}, #{item.createId,jdbcType=BIGINT}, 
+        #{item.updateId,jdbcType=BIGINT}, #{item.createTime,jdbcType=BIGINT}, #{item.updateTime,jdbcType=BIGINT}
+        )
+    </foreach>
+  </insert>
+</mapper>

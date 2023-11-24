@@ -1,7 +1,10 @@
 package com.material.chain.business.controller;
 
 import com.material.chain.business.domain.dto.PurchaseOrderDTO;
+import com.material.chain.business.domain.dto.PurchasePageDTO;
+import com.material.chain.business.domain.vo.PurchaseOrderVo;
 import com.material.chain.business.service.PurchaseService;
+import com.material.chain.common.doamin.vo.PageVo;
 import com.material.chain.common.utils.ApiResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -20,5 +23,12 @@ public class PurchaseOrderController {
     public ApiResult<Boolean> createPurchaseOrder(@RequestBody PurchaseOrderDTO dto) {
         PurchaseService service = PurchaseService.getBean(dto.getPurchaseType());
         return ApiResult.success(service.createPurchaseOrder(dto));
+    }
+
+    @ApiOperation("采购单列表")
+    @PostMapping(value = "pageList")
+    public ApiResult<PageVo<PurchaseOrderVo>> pageList(@RequestBody PurchasePageDTO dto) {
+        PurchaseService service = PurchaseService.getBean(dto.getPurchaseType());
+        return ApiResult.success(service.pageList(dto));
     }
 }

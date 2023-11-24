@@ -242,4 +242,15 @@
         )
     </foreach>
   </insert>
+
+  <select id="findAllInPurchaseIds" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_global_purchase_item
+        where purchase_id in
+        <foreach item="item" index="index" collection="purchaseIds"
+                 open="(" separator="," close=")">
+            #{item,jdbcType=VARCHAR}
+        </foreach>
+    </select>
 </mapper>

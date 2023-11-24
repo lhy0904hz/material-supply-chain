@@ -1,4 +1,5 @@
 package com.material.chain.business.mapper;
+import java.util.Collection;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.material.chain.business.domain.po.GlobalPurchaseAddressPo;
@@ -11,4 +12,8 @@ public interface GlobalPurchaseAddressPoMapper extends BaseMapper<GlobalPurchase
     int updateBatchSelective(List<GlobalPurchaseAddressPo> list);
 
     int batchInsert(@Param("list") List<GlobalPurchaseAddressPo> list);
+
+    List<GlobalPurchaseAddressPo> findAllInPurchaseIds(@Param("purchaseIds") Collection<Long> purchaseIds);
+
+
 }

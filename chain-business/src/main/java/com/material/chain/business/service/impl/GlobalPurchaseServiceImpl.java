@@ -2,6 +2,10 @@ package com.material.chain.business.service.impl;
 
 
 import com.alibaba.fastjson.JSON;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.material.chain.base.exception.ApiException;
 import com.material.chain.base.redis.RedissonLockManager;
 import com.material.chain.base.utils.AppContextUtil;
@@ -9,7 +13,10 @@ import com.material.chain.business.constant.TopicConstant;
 import com.material.chain.business.domain.dto.PurchaseOrderAddressDTO;
 import com.material.chain.business.domain.dto.PurchaseOrderDTO;
 import com.material.chain.business.domain.dto.PurchaseOrderItemDTO;
+import com.material.chain.business.domain.dto.PurchasePageDTO;
 import com.material.chain.business.domain.po.*;
+import com.material.chain.business.domain.vo.PurchaseOrderAddressVo;
+import com.material.chain.business.domain.vo.PurchaseOrderItemVo;
 import com.material.chain.business.domain.vo.PurchaseOrderVo;
 import com.material.chain.business.enums.OrderEnum;
 import com.material.chain.business.enums.PayEnum;
@@ -21,6 +28,7 @@ import com.material.chain.business.service.MaterialService;
 import com.material.chain.business.service.PurchaseService;
 import com.material.chain.business.utils.RandomUtil;
 import com.material.chain.common.constant.RedisKey;
+import com.material.chain.common.doamin.vo.PageVo;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.rocketmq.spring.core.RocketMQTemplate;
@@ -36,6 +44,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
@@ -144,6 +153,82 @@ public class GlobalPurchaseServiceImpl implements PurchaseService {
     @Override
     public void updatePurchaseOrderStatus(Long id, Integer orderStatus) {
         globalPurchaseOrderPoMapper.updateOrderStatusById(id, orderStatus);
+    }
+
+    /**
+     * 分页列表
+     */
+    @Override
+    public PageVo<PurchaseOrderVo> pageList(PurchasePageDTO dto) {
+        LambdaQueryWrapper<GlobalPurchaseOrderPo> wrapper = Wrappers.lambdaQuery();
+        wrapper.eq(StringUtils.isNotBlank(dto.getOrderNo()), GlobalPurchaseOrderPo::getOrederNo, dto.getOrderNo());
+        Page<GlobalPurchaseOrderPo> page = globalPurchaseOrderPoMapper.selectPage(new Page<>(dto.getPageNo(), dto.getPageSize()), wrapper);
+        List<GlobalPurchaseOrderPo> records = Optional.ofNullable(page).map(Page::getRecords).orElse(new ArrayList<>());
+        if (CollectionUtils.isEmpty(records)) {
+            return new PageVo<>();
+        }
+        List<Long> purchaseIds = records.stream().map(GlobalPurchaseOrderPo::getId).collect(Collectors.toList());
+        List<GlobalPurchaseItemPo> itemList = purchaseItemPoMapper.findAllInPurchaseIds(purchaseIds);
+        List<GlobalPurchaseAddressPo> addressList = purchaseAddressPoMapper.findAllInPurchaseIds(purchaseIds);
+        if (CollectionUtils.isEmpty(itemList) || CollectionUtils.isEmpty(addressList)) {
+            return new PageVo<>();
+        }
+
+        PageVo<PurchaseOrderVo> pageVo = new PageVo<>();
+        List<PurchaseOrderVo> purchaseOrderList = new ArrayList<>();
+
+        for (GlobalPurchaseOrderPo po : records) {
+            PurchaseOrderVo vo = new PurchaseOrderVo();
+            vo.setPurchaseId(po.getId());
+            vo.setOrderNo(po.getOrederNo());
+            vo.setCurrency(po.getCurrency());
+            vo.setCountryCode(po.getCountryCode());
+            vo.setSupplierId(po.getSupplierId());
+            vo.setPurchaseType(PurchasePlatformEnum.GLOBAL.getValue());
+
+            //物料列表
+            List<PurchaseOrderItemVo> itemVoList = itemList.stream()
+                    .filter(item -> Objects.equals(item.getPurchaseId(), po.getId()))
+                    .map(item -> {
+                        PurchaseOrderItemVo itemVo = new PurchaseOrderItemVo();
+                        itemVo.setId(item.getId());
+                        itemVo.setPurchaseId(po.getId());
+                        itemVo.setMaterialId(item.getMaterialId());
+                        itemVo.setSupplierId(item.getSupplierId());
+                        itemVo.setMaterialName(item.getMaterialName());
+                        itemVo.setThickness(item.getThickness());
+                        itemVo.setWidth(item.getWidth());
+                        itemVo.setLength(item.getLength());
+                        itemVo.setWeight(item.getWeight());
+                        itemVo.setUnitPrice(item.getUnitPrice());
+                        itemVo.setQuantity(item.getQuantity());
+                        return itemVo;
+                    }).collect(Collectors.toList());
+            vo.setItemList(itemVoList);
+
+            //地址信息
+            GlobalPurchaseAddressPo addressPo = addressList.stream().filter(address -> Objects.equals(address.getPurchaseId(), po.getId())).findAny().orElse(null);
+            if (Objects.nonNull(addressPo)) {
+                PurchaseOrderAddressVo addressVo = new PurchaseOrderAddressVo();
+                addressVo.setAddress(addressPo.getAddress());
+                addressVo.setPurchaseId(addressPo.getPurchaseId());
+                addressVo.setId(addressPo.getId());
+                addressVo.setProvince(addressPo.getProvince());
+                addressVo.setCity(addressPo.getCity());
+                addressVo.setArea(addressPo.getArea());
+                addressVo.setRecipientName(addressPo.getRecipientName());
+                addressVo.setRecipientPhone(addressPo.getRecipientPhone());
+                vo.setAddress(addressVo);
+            }
+            purchaseOrderList.add(vo);
+        }
+
+        pageVo.setPageNo(page.getCurrent());
+        pageVo.setPageSize(page.getSize());
+        pageVo.setRecords(purchaseOrderList);
+        pageVo.setTotal(page.getTotal());
+
+        return pageVo;
     }
 
     /**

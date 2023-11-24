@@ -4,6 +4,9 @@ import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.alibaba.fastjson.support.config.FastJsonConfig;
 import com.alibaba.fastjson.support.spring.FastJsonRedisSerializer;
 import com.material.chain.base.redis.RedisTemplateService;
+import org.redisson.Redisson;
+import org.redisson.api.RedissonClient;
+import org.redisson.config.Config;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration;
 import org.springframework.context.annotation.Bean;
@@ -12,9 +15,18 @@ import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactor
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
+import javax.annotation.PostConstruct;
+import java.io.IOException;
+
 @Configuration
 @AutoConfigureBefore(RedisAutoConfiguration.class)
 public class RedisConfiguration {
+
+    @Bean
+    public LettuceConnectionFactory lettuceConnectionFactory() {
+        // 配置Lettuce连接工厂的相关信息
+        return new LettuceConnectionFactory();
+    }
 
     /**
      * redisTemplate 序列化使用的jdkSerializeable, 存储二进制字节码, 所以自定义序列化类
@@ -47,4 +59,19 @@ public class RedisConfiguration {
     public RedisTemplateService redisTemplateService(RedisTemplate<String, Object> redisTemplate) {
         return new RedisTemplateService(redisTemplate);
     }
+
+    @Bean
+    public RedissonClient redissonClient() {
+        // 默认连接地址 127.0.0.1:6379
+        Config config = new Config();
+        config.useSingleServer().setAddress("redis://localhost:6379");
+        return Redisson.create(config);
+    }
+
+/*    @PostConstruct
+    private void init() {
+        Config config = new Config();
+        config.useSingleServer().setAddress("redis://localhost:6379");
+        Redisson.create(config);
+    }*/
 }

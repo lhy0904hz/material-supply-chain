@@ -1,11 +1,13 @@
 package com.material.chain.base.redis;
 
+import com.material.chain.base.holder.SpringContextHolder;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
@@ -13,8 +15,30 @@ import java.util.function.Supplier;
 @Component
 public class RedissonLockManager {
 
-    @Autowired
-    private RedissonClient redissonClient;
+    private static volatile RedissonLockManager instance;
+
+    private static RedissonClient redissonClient;
+
+/*    @Autowired
+    private RedissonClient redissonClient;*/
+
+    private RedissonLockManager() {}
+
+    public static RedissonLockManager getInstance() {
+        if (instance == null) {
+            synchronized (RedissonLockManager.class) {
+                if (instance == null) {
+                    instance = new RedissonLockManager();
+                }
+            }
+        }
+        return instance;
+    }
+
+    static {
+        log.info("RedissonLockManager.static initializer!");
+        RedissonLockManager.redissonClient = SpringContextHolder.getBean(RedissonClient.class);
+    }
 
     /**
      * 获取公平或非公平锁
@@ -43,12 +67,9 @@ public class RedissonLockManager {
      */
     public void getLockToVoid(String key, Long timeoutSecond, Long expireSecond, Supplier<Void> method) {
         RLock lock = redissonClient.getLock(key);
-        boolean getLock = false;
         try {
-            if (getLock == lock.tryLock(timeoutSecond, expireSecond, TimeUnit.SECONDS)) {
+            if (lock.tryLock(timeoutSecond, expireSecond, TimeUnit.SECONDS)) {
                 method.get();
-            } else {
-                log.warn("获取锁超时");
             }
         }catch (Exception e) {
             log.error("加锁失败", e);
@@ -66,12 +87,9 @@ public class RedissonLockManager {
      */
     public <T> T getLockToCallable(String key, Long timeoutSecond, Long expireSecond, Supplier<T> method) {
         RLock lock = redissonClient.getLock(key);
-        boolean getLock = false;
         try {
-            if (getLock == lock.tryLock(timeoutSecond, expireSecond, TimeUnit.SECONDS)) {
+            if (lock.tryLock(timeoutSecond, expireSecond, TimeUnit.SECONDS)) {
                 return method.get();
-            } else {
-                log.warn("获取锁超时");
             }
         }catch (Exception e) {
             log.error("加锁失败", e);

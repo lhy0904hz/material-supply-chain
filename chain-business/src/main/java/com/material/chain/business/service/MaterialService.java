@@ -29,4 +29,9 @@ public interface MaterialService extends IService<MaterialPo> {
      * 根据id查询物料
      */
     MaterialPo getMaterialCodeById(Long id);
+
+    /**
+     * 修改库存
+     */
+    void updateMaterialInventory(Long id, Integer inventoryNumber);
 }

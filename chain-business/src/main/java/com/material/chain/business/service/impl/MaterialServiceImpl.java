@@ -142,4 +142,14 @@ public class MaterialServiceImpl extends ServiceImpl<MaterialPoMapper, MaterialP
     public MaterialPo getMaterialCodeById(Long id) {
         return materialPoMapper.selectById(id);
     }
+
+    /**
+     * 修改库存
+     * @param id 主键id
+     * @param inventoryNumber 库存值
+     */
+    @Override
+    public void updateMaterialInventory(Long id, Integer inventoryNumber) {
+        materialInventoryPoMapper.updateIncInventoryNumberById(id, inventoryNumber);
+    }
 }

@@ -1,8 +1,8 @@
 package com.material.chain.business.service.impl;
 
 import com.material.chain.base.exception.ApiException;
+import com.material.chain.base.redis.RedissonLockManager;
 import com.material.chain.base.utils.AppContextUtil;
-import com.material.chain.business.constant.TopicConstant;
 import com.material.chain.business.domain.dto.PurchaseOrderAddressDTO;
 import com.material.chain.business.domain.dto.PurchaseOrderDTO;
 import com.material.chain.business.domain.dto.PurchaseOrderItemDTO;
@@ -15,18 +15,26 @@ import com.material.chain.business.mapper.GlobalPurchaseOrderPoMapper;
 import com.material.chain.business.service.MaterialService;
 import com.material.chain.business.service.PurchaseService;
 import com.material.chain.business.utils.RandomUtil;
+import com.material.chain.common.constant.RedisKey;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.rocketmq.spring.core.RocketMQTemplate;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.messaging.Message;
-import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionCallbackWithoutResult;
+import org.springframework.transaction.support.TransactionSynchronization;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -41,8 +49,10 @@ public class GlobalPurchaseServiceImpl implements PurchaseService {
     private GlobalPurchaseAddressPoMapper purchaseAddressPoMapper;
     @Autowired
     private MaterialService materialService;
+
     @Autowired
     private RocketMQTemplate rocketmqTemplate;
+
 
     /**
      * 创建采购单
@@ -79,42 +89,56 @@ public class GlobalPurchaseServiceImpl implements PurchaseService {
         }).reduce(BigDecimal::add).orElse(BigDecimal.ZERO);
         //总数量
         Integer quantityTotal = purchaseOrderItemList.stream().mapToInt(PurchaseOrderItemDTO::getQuantity).sum();
+
+        //这里使用编程式事务而不是在方法上使用注解@Transactional(rollbackFor = Exception.class)，主要是为了控制事务的粒度
         //保存采购单
         GlobalPurchaseOrderPo po = savePurchaseOrder(dto, currentUserId, timeMillis, priceTotal, quantityTotal);
-
         Long purchaseId = po.getId();
-
         //保存采购单物料
         savePurchaseItem(purchaseOrderItemList, po, dto.getSupplierId(), currentUserId, timeMillis);
-
         //保存地址
         savePurchaseAddress(address, purchaseId, currentUserId, timeMillis);
 
-        Message<String> helloRocketmq = MessageBuilder.withPayload("hello rocketmq").build();
-        log.info("发送生产者消息开始");
-        rocketmqTemplate.send(TopicConstant.PURCHASE_ORDER_TOPIC, helloRocketmq);
-        log.info("发送生产者消息结束");
-
-        //扣减库存
-        for (PurchaseOrderItemDTO orderItemDTO : purchaseOrderItemList) {
-            MaterialInventoryPo inventoryPo = inventoryList.stream().filter(inventory -> Objects.equals(inventory.getMaterialId(), orderItemDTO.getMaterialId())).findAny().orElse(null);
-            if (Objects.isNull(inventoryPo)) {
-                log.warn("没有找到该物料的库存 物料id：{}", orderItemDTO.getMaterialId());
-                continue;
+        //钩子，上面事务确保提交成功后才会执行下面方法
+        TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+            @Override
+            public void afterCommit() {
+                List<CompletableFuture<Void>> completableFutureList = new ArrayList<>();
+                RedissonLockManager instance = RedissonLockManager.getInstance();
+                //异步线程去扣减库存
+                for (PurchaseOrderItemDTO orderItemDTO : purchaseOrderItemList) {
+                    CompletableFuture<Void> inventoryFuture = CompletableFuture.runAsync(() -> {
+                        String iInventoryKey = String.format(RedisKey.REDUCE_INVENTORY_KEY, orderItemDTO.getMaterialId());
+                        instance.getLockToVoid(iInventoryKey, 5L, 10L, () -> {
+                            reduceInventory(inventoryList, orderItemDTO);
+                            return null;
+                        });
+                    });
+                    completableFutureList.add(inventoryFuture);
+                }
+                //等待所有异步线程执行完
+                CompletableFuture.allOf(completableFutureList.toArray(new CompletableFuture[0])).join();
             }
-            //TODO 分布式锁扣减库存
-            Integer quantity = orderItemDTO.getQuantity();
+        });
+        return true;
+    }
 
+    /**
+     * 扣减库存
+     * @param inventoryList 物料库存数据
+     * @param orderItemDTO 当前需要扣减的数据
+     */
+    private void reduceInventory(List<MaterialInventoryPo> inventoryList, PurchaseOrderItemDTO orderItemDTO) {
+        MaterialInventoryPo inventoryPo = inventoryList.stream().filter(inventory -> Objects.equals(inventory.getMaterialId(), orderItemDTO.getMaterialId())).findAny().orElse(null);
+        if (Objects.isNull(inventoryPo)) {
+            log.warn("没有找到该物料的库存 物料id：{}", orderItemDTO.getMaterialId());
+            return;
         }
-
-
-
-
-
-
-
-
-        return null;
+        Integer quantity = orderItemDTO.getQuantity();
+        Integer inventoryNumber = inventoryPo.getInventoryNumber();
+        AtomicInteger atomicInteger = new AtomicInteger(inventoryNumber);
+        atomicInteger.addAndGet(-quantity);
+        materialService.updateMaterialInventory(inventoryPo.getId(), atomicInteger.get());
     }
 
     /**

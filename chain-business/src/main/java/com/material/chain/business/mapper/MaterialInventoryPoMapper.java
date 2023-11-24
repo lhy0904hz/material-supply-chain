@@ -15,5 +15,9 @@ public interface MaterialInventoryPoMapper extends BaseMapper<MaterialInventoryP
 
     List<MaterialInventoryPo> findAllInMaterialIds(@Param("ids")Collection<Long> ids);
 
+    int updateIncInventoryNumberById(@Param("id") Long id, @Param("inventoryNumber") Integer inventoryNumber);
+
+
+
 
 }

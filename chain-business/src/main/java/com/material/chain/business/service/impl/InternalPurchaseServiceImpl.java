@@ -12,4 +12,9 @@ public class InternalPurchaseServiceImpl implements PurchaseService {
     public Boolean createPurchaseOrder(PurchaseOrderDTO dto) {
         return null;
     }
+
+    @Override
+    public void updatePurchaseOrderStatus(Long id, Integer orderStatus) {
+
+    }
 }

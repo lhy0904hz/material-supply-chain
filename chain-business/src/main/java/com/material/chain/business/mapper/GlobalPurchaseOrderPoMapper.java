@@ -11,4 +11,8 @@ public interface GlobalPurchaseOrderPoMapper extends BaseMapper<GlobalPurchaseOr
     int updateBatchSelective(List<GlobalPurchaseOrderPo> list);
 
     int batchInsert(@Param("list") List<GlobalPurchaseOrderPo> list);
+
+    int updateOrderStatusById(@Param("id") Long id, @Param("updatedOrderStatus") Integer updatedOrderStatus);
+
+
 }

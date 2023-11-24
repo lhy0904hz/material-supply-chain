@@ -1,14 +1,19 @@
 package com.material.chain.business.service.impl;
 
+
+import com.alibaba.fastjson.JSON;
 import com.material.chain.base.exception.ApiException;
 import com.material.chain.base.redis.RedissonLockManager;
 import com.material.chain.base.utils.AppContextUtil;
+import com.material.chain.business.constant.TopicConstant;
 import com.material.chain.business.domain.dto.PurchaseOrderAddressDTO;
 import com.material.chain.business.domain.dto.PurchaseOrderDTO;
 import com.material.chain.business.domain.dto.PurchaseOrderItemDTO;
 import com.material.chain.business.domain.po.*;
+import com.material.chain.business.domain.vo.PurchaseOrderVo;
 import com.material.chain.business.enums.OrderEnum;
 import com.material.chain.business.enums.PayEnum;
+import com.material.chain.business.enums.PurchasePlatformEnum;
 import com.material.chain.business.mapper.GlobalPurchaseAddressPoMapper;
 import com.material.chain.business.mapper.GlobalPurchaseItemPoMapper;
 import com.material.chain.business.mapper.GlobalPurchaseOrderPoMapper;
@@ -19,15 +24,13 @@ import com.material.chain.common.constant.RedisKey;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.rocketmq.spring.core.RocketMQTemplate;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.Message;
+import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionCallbackWithoutResult;
 import org.springframework.transaction.support.TransactionSynchronization;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
-import org.springframework.transaction.support.TransactionTemplate;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -90,37 +93,56 @@ public class GlobalPurchaseServiceImpl implements PurchaseService {
         //总数量
         Integer quantityTotal = purchaseOrderItemList.stream().mapToInt(PurchaseOrderItemDTO::getQuantity).sum();
 
-        //这里使用编程式事务而不是在方法上使用注解@Transactional(rollbackFor = Exception.class)，主要是为了控制事务的粒度
         //保存采购单
         GlobalPurchaseOrderPo po = savePurchaseOrder(dto, currentUserId, timeMillis, priceTotal, quantityTotal);
+        //采购单id
         Long purchaseId = po.getId();
         //保存采购单物料
         savePurchaseItem(purchaseOrderItemList, po, dto.getSupplierId(), currentUserId, timeMillis);
         //保存地址
         savePurchaseAddress(address, purchaseId, currentUserId, timeMillis);
 
+        //异步线程去扣减库存
+        List<CompletableFuture<Void>> completableFutureList = new ArrayList<>();
+        RedissonLockManager instance = RedissonLockManager.getInstance();
+        for (PurchaseOrderItemDTO orderItemDTO : purchaseOrderItemList) {
+            CompletableFuture<Void> inventoryFuture = CompletableFuture.runAsync(() -> {
+                String iInventoryKey = String.format(RedisKey.REDUCE_INVENTORY_KEY, orderItemDTO.getMaterialId());
+                instance.getLockToVoid(iInventoryKey, 5L, 10L, () -> {
+                    reduceInventory(inventoryList, orderItemDTO);
+                    return null;
+                });
+            });
+            completableFutureList.add(inventoryFuture);
+        }
+        //等待所有异步线程执行完
+        CompletableFuture.allOf(completableFutureList.toArray(new CompletableFuture[0])).join();
+
         //钩子，上面事务确保提交成功后才会执行下面方法
         TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
             @Override
             public void afterCommit() {
-                List<CompletableFuture<Void>> completableFutureList = new ArrayList<>();
-                RedissonLockManager instance = RedissonLockManager.getInstance();
-                //异步线程去扣减库存
-                for (PurchaseOrderItemDTO orderItemDTO : purchaseOrderItemList) {
-                    CompletableFuture<Void> inventoryFuture = CompletableFuture.runAsync(() -> {
-                        String iInventoryKey = String.format(RedisKey.REDUCE_INVENTORY_KEY, orderItemDTO.getMaterialId());
-                        instance.getLockToVoid(iInventoryKey, 5L, 10L, () -> {
-                            reduceInventory(inventoryList, orderItemDTO);
-                            return null;
-                        });
-                    });
-                    completableFutureList.add(inventoryFuture);
-                }
-                //等待所有异步线程执行完
-                CompletableFuture.allOf(completableFutureList.toArray(new CompletableFuture[0])).join();
+                //发送MQ方法，模拟支付
+                PurchaseOrderVo vo = new PurchaseOrderVo();
+                vo.setPurchaseId(purchaseId);
+                vo.setPurchaseType(PurchasePlatformEnum.GLOBAL.getType());
+                Message<String> message = MessageBuilder.withPayload(JSON.toJSONString(vo)).build();
+                log.info("发送生产者消息开始");
+                rocketmqTemplate.send(TopicConstant.PURCHASE_ORDER_TOPIC, message);
+                log.info("发送生产者消息结束");
             }
         });
         return true;
+    }
+
+    /**
+     * 修改采购单状态
+     * @param id 主键id
+     * @param orderStatus 采购单状态
+     */
+    @Override
+    public void updatePurchaseOrderStatus(Long id, Integer orderStatus) {
+        globalPurchaseOrderPoMapper.updateOrderStatusById(id, orderStatus);
     }
 
     /**

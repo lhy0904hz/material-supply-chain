@@ -21,5 +21,12 @@ public interface PurchaseService {
         return SpringContextHolder.getBean(PurchasePlatformEnum.getBeanNameByType(type));
     }
 
+    /**
+     * 修改采购单状态
+     * @param id 主键id
+     * @param orderStatus 采购单状态
+     */
+    void updatePurchaseOrderStatus(Long id, Integer orderStatus);
+
 
 }

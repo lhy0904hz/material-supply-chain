@@ -107,6 +107,7 @@ public class GlobalPurchaseServiceImpl implements PurchaseService {
         RedissonLockManager instance = RedissonLockManager.getInstance();
         for (PurchaseOrderItemDTO orderItemDTO : purchaseOrderItemList) {
             CompletableFuture<Void> inventoryFuture = CompletableFuture.runAsync(() -> {
+                //分布式锁锁住，按物料粒度去锁，减少锁的粒度，增加性能
                 String iInventoryKey = String.format(RedisKey.REDUCE_INVENTORY_KEY, orderItemDTO.getMaterialId());
                 instance.getLockToVoid(iInventoryKey, 5L, 10L, () -> {
                     reduceInventory(inventoryList, orderItemDTO);

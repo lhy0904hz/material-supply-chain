@@ -7,6 +7,8 @@ import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.material.chain.base.exception.ApiException;
+import com.material.chain.base.page.PageResponse;
+import com.material.chain.base.page.PageUtil;
 import com.material.chain.base.redis.RedissonLockManager;
 import com.material.chain.base.utils.AppContextUtil;
 import com.material.chain.business.constant.TopicConstant;
@@ -162,8 +164,10 @@ public class GlobalPurchaseServiceImpl implements PurchaseService {
     public PageVo<PurchaseOrderVo> pageList(PurchasePageDTO dto) {
         LambdaQueryWrapper<GlobalPurchaseOrderPo> wrapper = Wrappers.lambdaQuery();
         wrapper.eq(StringUtils.isNotBlank(dto.getOrderNo()), GlobalPurchaseOrderPo::getOrederNo, dto.getOrderNo());
-        Page<GlobalPurchaseOrderPo> page = globalPurchaseOrderPoMapper.selectPage(new Page<>(dto.getPageNo(), dto.getPageSize()), wrapper);
-        List<GlobalPurchaseOrderPo> records = Optional.ofNullable(page).map(Page::getRecords).orElse(new ArrayList<>());
+        PageResponse<GlobalPurchaseOrderPo> page = PageUtil.getPage(() -> globalPurchaseOrderPoMapper.selectList(wrapper));
+
+        //Page<GlobalPurchaseOrderPo> page = globalPurchaseOrderPoMapper.selectPage(new Page<>(dto.getPageNo(), dto.getPageSize()), wrapper);
+        List<GlobalPurchaseOrderPo> records = Optional.ofNullable(page).map(PageResponse::getRecords).orElse(new ArrayList<>());
         if (CollectionUtils.isEmpty(records)) {
             return new PageVo<>();
         }
@@ -223,10 +227,10 @@ public class GlobalPurchaseServiceImpl implements PurchaseService {
             purchaseOrderList.add(vo);
         }
 
-        pageVo.setPageNo(page.getCurrent());
-        pageVo.setPageSize(page.getSize());
+        pageVo.setPageNo(page.getPageNo().longValue());
+        pageVo.setPageSize(page.getSize().longValue());
         pageVo.setRecords(purchaseOrderList);
-        pageVo.setTotal(page.getTotal());
+        pageVo.setTotal(page.getTotal().longValue());
 
         return pageVo;
     }

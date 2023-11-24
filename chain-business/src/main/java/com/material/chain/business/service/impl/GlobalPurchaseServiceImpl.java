@@ -96,7 +96,7 @@ public class GlobalPurchaseServiceImpl implements PurchaseService {
         log.info("发送生产者消息结束");
 
         //扣减库存
-  /*      for (PurchaseOrderItemDTO orderItemDTO : purchaseOrderItemList) {
+        for (PurchaseOrderItemDTO orderItemDTO : purchaseOrderItemList) {
             MaterialInventoryPo inventoryPo = inventoryList.stream().filter(inventory -> Objects.equals(inventory.getMaterialId(), orderItemDTO.getMaterialId())).findAny().orElse(null);
             if (Objects.isNull(inventoryPo)) {
                 log.warn("没有找到该物料的库存 物料id：{}", orderItemDTO.getMaterialId());
@@ -105,7 +105,7 @@ public class GlobalPurchaseServiceImpl implements PurchaseService {
             //TODO 分布式锁扣减库存
             Integer quantity = orderItemDTO.getQuantity();
 
-        }*/
+        }
 
 
 

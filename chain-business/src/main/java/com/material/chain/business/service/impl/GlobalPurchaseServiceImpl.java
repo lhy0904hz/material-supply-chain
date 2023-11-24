@@ -165,8 +165,6 @@ public class GlobalPurchaseServiceImpl implements PurchaseService {
         LambdaQueryWrapper<GlobalPurchaseOrderPo> wrapper = Wrappers.lambdaQuery();
         wrapper.eq(StringUtils.isNotBlank(dto.getOrderNo()), GlobalPurchaseOrderPo::getOrederNo, dto.getOrderNo());
         PageResponse<GlobalPurchaseOrderPo> page = PageUtil.getPage(() -> globalPurchaseOrderPoMapper.selectList(wrapper));
-
-        //Page<GlobalPurchaseOrderPo> page = globalPurchaseOrderPoMapper.selectPage(new Page<>(dto.getPageNo(), dto.getPageSize()), wrapper);
         List<GlobalPurchaseOrderPo> records = Optional.ofNullable(page).map(PageResponse::getRecords).orElse(new ArrayList<>());
         if (CollectionUtils.isEmpty(records)) {
             return new PageVo<>();

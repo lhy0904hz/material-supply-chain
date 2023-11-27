@@ -133,6 +133,49 @@ public class SupplierServiceImpl extends ServiceImpl<SupplierPoMapper, SupplierP
     }
 
     /**
+     * 供应商详情
+     */
+    @Override
+    public SupplierVo detail(Long supplierId) {
+        SupplierPo supplierPo = this.getById(supplierId);
+        if (Objects.isNull(supplierPo)) {
+            throw new ApiException("供应商信息不存在");
+        }
+        SupplierVo vo = new SupplierVo();
+        vo.setSupplierId(supplierPo.getId());
+        vo.setSupplierName(supplierPo.getSupplierName());
+        vo.setSubjectName(supplierPo.getSubjectName());
+        vo.setSupplierTypeDesc(SupplierEnum.getValue(supplierPo.getSupplierType()));
+        vo.setLevel(supplierPo.getLevel());
+
+        //供应商地址信息
+        LambdaQueryWrapper<SupplierAddressPo> wrapper = Wrappers.lambdaQuery();
+        wrapper.eq(SupplierAddressPo::getSupplierId, supplierId);
+        wrapper.eq(SupplierAddressPo::getIsDefault, 0);
+        List<SupplierAddressPo> supplierAddressList = supplierAddressPoMapper.selectList(wrapper);
+        if (CollectionUtils.isEmpty(supplierAddressList)) {
+            throw new ApiException("供应商地址不存在");
+        }
+        List<SupplierAddressVo> addressList = supplierAddressList.stream().map(address -> {
+            SupplierAddressVo addressVo = new SupplierAddressVo();
+            addressVo.setAddressId(address.getId());
+            addressVo.setSupplierId(address.getSupplierId());
+            addressVo.setProvince(address.getProvince());
+            addressVo.setCity(address.getCity());
+            addressVo.setArea(address.getArea());
+            addressVo.setSenderName(address.getSenderName());
+            addressVo.setSenderPhone(address.getSenderPhone());
+            addressVo.setIsDefault(address.getIsDefault());
+            addressVo.setZipCode(address.getZipCode());
+            addressVo.setAddress(address.getAddress());
+            return addressVo;
+        }).collect(Collectors.toList());
+        vo.setAddressList(addressList);
+
+        return vo;
+    }
+
+    /**
      * 封装供应商数据
      */
     private SupplierPo buildSupplierPo(SupplierDTO dto, Long currentUserId, long timeMillis) {

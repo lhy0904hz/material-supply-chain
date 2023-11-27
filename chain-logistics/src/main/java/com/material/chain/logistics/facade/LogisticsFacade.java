@@ -1,7 +1,7 @@
 package com.material.chain.logistics.facade;
 
 import com.material.chain.common.utils.ApiResult;
-import com.material.chain.logistics.client.LogisticsApi;
+import com.material.chain.logistics.client.LogisticsClient;
 import com.material.chain.logistics.domain.dto.LogisticsOrderDTO;
 import com.material.chain.logistics.domain.vo.LogisticsProviderVo;
 import com.material.chain.logistics.domain.vo.LogisticsTrajectoryVo;
@@ -15,8 +15,8 @@ import java.util.List;
 
 @Api(tags = "物流")
 @RestController
-@RequestMapping("/chainLogistics")
-public class LogisticsFacade implements LogisticsApi {
+@RequestMapping("/logistics")
+public class LogisticsFacade implements LogisticsClient {
 
     @Autowired
     private LogisticsService logisticsService;

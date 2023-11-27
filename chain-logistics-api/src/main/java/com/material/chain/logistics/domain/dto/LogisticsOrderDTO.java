@@ -18,6 +18,9 @@ public class LogisticsOrderDTO {
     @ApiModelProperty(value = "物流商id")
     private Long providerId;
 
+    @ApiModelProperty(value = "物流商id")
+    private Long userId;
+
     @ApiModelProperty(value = "地址信息")
     private LogisticsOrderAddressDTO orderAddress;
 

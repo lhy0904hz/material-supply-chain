@@ -1,6 +1,5 @@
 package com.material.chain.logistics.service.impl;
 
-import com.material.chain.base.utils.AppContextUtil;
 import com.material.chain.common.enums.StatusEnum;
 import com.material.chain.logistics.domain.dto.LogisticsOrderAddressDTO;
 import com.material.chain.logistics.domain.dto.LogisticsOrderDTO;
@@ -8,7 +7,7 @@ import com.material.chain.logistics.domain.dto.LogisticsOrderItemDTO;
 import com.material.chain.logistics.domain.po.*;
 import com.material.chain.logistics.domain.vo.LogisticsProviderVo;
 import com.material.chain.logistics.domain.vo.LogisticsTrajectoryVo;
-import com.material.chain.logistics.enums.LogisticsStatusEnum;
+import com.material.chain.common.enums.LogisticsStatusEnum;
 import com.material.chain.logistics.mapper.*;
 import com.material.chain.logistics.service.LogisticsService;
 import com.material.chain.logistics.utils.GenerateNoUtil;
@@ -55,6 +54,7 @@ public class LogisticsServiceImpl implements LogisticsService {
         }
         return providerList.stream().map(p -> {
             LogisticsProviderVo vo = new LogisticsProviderVo();
+            vo.setProviderId(p.getId());
             vo.setProviderName(p.getName());
             return vo;
         }).collect(Collectors.toList());
@@ -68,7 +68,7 @@ public class LogisticsServiceImpl implements LogisticsService {
     public String createOrder(LogisticsOrderDTO dto) {
         LogisticsOrderPo po = new LogisticsOrderPo();
 
-        Long currentUserId = AppContextUtil.getCurrentUserId();
+        Long currentUserId = dto.getUserId();
         Long timeMillis = System.currentTimeMillis();
 
         //新增订单信息

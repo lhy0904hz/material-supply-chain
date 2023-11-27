@@ -1,4 +1,4 @@
-package com.material.chain.logistics.enums;
+package com.material.chain.common.enums;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

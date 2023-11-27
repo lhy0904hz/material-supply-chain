@@ -7,15 +7,14 @@
         <artifactId>material-supply-chain</artifactId>
         <version>2.3.12.RELEASE</version>
     </parent>
-    <groupId>com.material.chain.business</groupId>
-    <artifactId>chain-business</artifactId>
+    <groupId>com.material.chain.logistics.api</groupId>
+    <artifactId>chain-logistics-api</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>chain-business</name>
-    <description>chain-business</description>
+    <name>chain-logistics-api</name>
+    <description>chain-logistics-api</description>
     <properties>
         <java.version>1.8</java.version>
     </properties>
-
     <dependencies>
         <dependency>
             <groupId>com.material.chain.base</groupId>
@@ -26,12 +25,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.material.chain.logistics.api</groupId>
-            <artifactId>chain-logistics-api</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
         </dependency>
 
         <dependency>

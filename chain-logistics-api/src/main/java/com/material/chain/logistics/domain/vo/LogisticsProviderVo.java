@@ -11,6 +11,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class LogisticsProviderVo {
+    @ApiModelProperty(value = "服务商id")
+    private Long providerId;
 
     @ApiModelProperty(value = "服务商名称")
     private String providerName;

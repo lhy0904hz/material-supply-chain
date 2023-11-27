@@ -11,14 +11,9 @@ import com.material.chain.base.page.PageUtil;
 import com.material.chain.base.redis.RedissonLockManager;
 import com.material.chain.base.utils.AppContextUtil;
 import com.material.chain.business.constant.TopicConstant;
-import com.material.chain.business.domain.dto.PurchaseOrderAddressDTO;
-import com.material.chain.business.domain.dto.PurchaseOrderDTO;
-import com.material.chain.business.domain.dto.PurchaseOrderItemDTO;
-import com.material.chain.business.domain.dto.PurchasePageDTO;
+import com.material.chain.business.domain.dto.*;
 import com.material.chain.business.domain.po.*;
-import com.material.chain.business.domain.vo.PurchaseOrderAddressVo;
-import com.material.chain.business.domain.vo.PurchaseOrderItemVo;
-import com.material.chain.business.domain.vo.PurchaseOrderVo;
+import com.material.chain.business.domain.vo.*;
 import com.material.chain.business.enums.OrderEnum;
 import com.material.chain.business.enums.PayEnum;
 import com.material.chain.business.enums.PurchasePlatformEnum;
@@ -27,9 +22,17 @@ import com.material.chain.business.mapper.GlobalPurchaseItemPoMapper;
 import com.material.chain.business.mapper.GlobalPurchaseOrderPoMapper;
 import com.material.chain.business.service.MaterialService;
 import com.material.chain.business.service.PurchaseService;
+import com.material.chain.business.service.SupplierService;
 import com.material.chain.business.utils.RandomUtil;
 import com.material.chain.common.constant.RedisKey;
 import com.material.chain.common.doamin.vo.PageVo;
+import com.material.chain.common.enums.LogisticsStatusEnum;
+import com.material.chain.common.utils.ApiResult;
+import com.material.chain.logistics.client.LogisticsClient;
+import com.material.chain.logistics.domain.dto.LogisticsOrderAddressDTO;
+import com.material.chain.logistics.domain.dto.LogisticsOrderDTO;
+import com.material.chain.logistics.domain.dto.LogisticsOrderItemDTO;
+import com.material.chain.logistics.domain.vo.LogisticsProviderVo;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.rocketmq.spring.core.RocketMQTemplate;
@@ -59,9 +62,12 @@ public class GlobalPurchaseServiceImpl implements PurchaseService {
     private GlobalPurchaseAddressPoMapper purchaseAddressPoMapper;
     @Autowired
     private MaterialService materialService;
-
     @Autowired
     private RocketMQTemplate rocketmqTemplate;
+    @Autowired
+    private SupplierService supplierService;
+    @Autowired
+    private LogisticsClient logisticsClient;
 
 
     /**
@@ -161,7 +167,7 @@ public class GlobalPurchaseServiceImpl implements PurchaseService {
         LambdaQueryWrapper<GlobalPurchaseOrderPo> wrapper = Wrappers.lambdaQuery();
         wrapper.eq(StringUtils.isNotBlank(dto.getOrderNo()), GlobalPurchaseOrderPo::getOrederNo, dto.getOrderNo());
         PageResponse<GlobalPurchaseOrderPo> page = PageUtil.getPage(() -> globalPurchaseOrderPoMapper.selectList(wrapper));
-        List<GlobalPurchaseOrderPo> records = Optional.ofNullable(page).map(PageResponse::getRecords).orElse(new ArrayList<>());
+        List<GlobalPurchaseOrderPo> records = Optional.of(page).map(PageResponse::getRecords).orElse(new ArrayList<>());
         if (CollectionUtils.isEmpty(records)) {
             return new PageVo<>();
         }
@@ -230,6 +236,102 @@ public class GlobalPurchaseServiceImpl implements PurchaseService {
         vo.setItemList(buildPurchaseOrderItem(itemList, po.getId()));
         vo.setAddress(buildPurchaseOrderAddress(addressList.get(0)));
         return vo;
+    }
+
+    /**
+     * 选择物流发货
+     */
+    @Override
+    public Boolean chooseLogistics(PurchaseLogisticsDTO dto) {
+        Long purchaseOrderId = dto.getPurchaseOrderId();
+        PurchaseOrderVo detail = this.detail(purchaseOrderId);
+        SupplierVo supplierInfo = supplierService.detail(detail.getSupplierId());
+        if (Objects.isNull(supplierInfo)) {
+            throw new ApiException("供应商信息不存在");
+        }
+        Long currentUserId = AppContextUtil.getCurrentUserId();
+
+        SupplierAddressVo addressVo = Optional.of(supplierInfo)
+                .map(SupplierVo::getAddressList)
+                .orElseThrow(() -> new ApiException("供应商地址不存在"))
+                .stream()
+                .filter(address -> address.getIsDefault() == 0).findAny().orElse(null);
+
+        ApiResult<String> order = logisticsClient.createOrder(buildLogisticsOrder(detail, dto.getProviderId(), currentUserId, addressVo));
+        String logisticsOrderNo = Optional.ofNullable(order).map(ApiResult::getData).orElseThrow(() -> new ApiException("创建物流单失败"));
+
+        GlobalPurchaseOrderPo purchaseOrderPo = new GlobalPurchaseOrderPo();
+        purchaseOrderPo.setId(purchaseOrderId);
+        purchaseOrderPo.setLogisticsNo(logisticsOrderNo);
+        purchaseOrderPo.setLogisticsStatus(LogisticsStatusEnum.VISIT_PICKING_UP.getCode());
+        purchaseOrderPo.setOrderStatus(OrderEnum.BE_SHIPPED.getCode());
+        globalPurchaseOrderPoMapper.updateById(purchaseOrderPo);
+
+        return true;
+    }
+
+    /**
+     * 获取物流商列表
+     */
+    @Override
+    public List<LogisticsProviderVo> getLogisticsProviderList() {
+        ApiResult<List<LogisticsProviderVo>> providerList = logisticsClient.getProviderList();
+        return Optional
+                .ofNullable(providerList)
+                .map(ApiResult::getData)
+                .orElseThrow(() -> new ApiException("没有找到物流商信息"));
+    }
+
+    /**
+     * 封装物流所需要的订单数据
+     */
+    private LogisticsOrderDTO buildLogisticsOrder(PurchaseOrderVo vo, Long providerId, Long userId, SupplierAddressVo supplierAddress) {
+        LogisticsOrderDTO logisticsOrderDTO = new LogisticsOrderDTO();
+        logisticsOrderDTO.setBusinessNo(vo.getOrderNo());
+        logisticsOrderDTO.setProviderId(providerId);
+        logisticsOrderDTO.setUserId(userId);
+
+       //包裹信息
+        List<PurchaseOrderItemVo> itemList = vo.getItemList();
+        if (CollectionUtils.isNotEmpty(itemList)) {
+            LogisticsOrderItemDTO itemDTO = new LogisticsOrderItemDTO();
+            itemDTO.setItemName(itemList.get(0).getMaterialName());
+            BigDecimal priceTotal = itemList.stream().map(item -> {
+                Integer quantity = item.getQuantity();
+                BigDecimal unitPrice = item.getUnitPrice();
+                if (Objects.isNull(quantity) || Objects.isNull(unitPrice)) {
+                    return BigDecimal.ZERO;
+                }
+                return unitPrice.multiply(new BigDecimal(quantity));
+            }).reduce(BigDecimal::add).orElse(BigDecimal.ZERO);
+            itemDTO.setPriceTotal(priceTotal);
+
+            Integer quantityTotal = itemList.stream().mapToInt(PurchaseOrderItemVo::getQuantity).sum();
+            itemDTO.setQuantityTotal(quantityTotal);
+
+            BigDecimal weightTotal = itemList.stream().map(PurchaseOrderItemVo::getWeight).reduce(BigDecimal::add).orElse(null);
+            itemDTO.setWeightTotal(weightTotal);
+            logisticsOrderDTO.setOrderItem(itemDTO);
+        }
+
+        //地址信息
+        PurchaseOrderAddressVo address = vo.getAddress();
+        LogisticsOrderAddressDTO addressDTO = new LogisticsOrderAddressDTO();
+        addressDTO.setRecipientProvince(address.getProvince());
+        addressDTO.setRecipientCity(address.getCity());
+        addressDTO.setRecipientArea(address.getArea());
+        addressDTO.setRecipientAddress(address.getAddress());
+        addressDTO.setRecipientName(address.getRecipientName());
+        addressDTO.setRecipientPhone(address.getRecipientPhone());
+        addressDTO.setSenderProvince(supplierAddress.getProvince());
+        addressDTO.setSenderCity(supplierAddress.getCity());
+        addressDTO.setSenderArea(supplierAddress.getArea());
+        addressDTO.setSenderAddress(supplierAddress.getAddress());
+        addressDTO.setSenderName(supplierAddress.getSenderName());
+        addressDTO.setSenderPhone(supplierAddress.getSenderPhone());
+        logisticsOrderDTO.setOrderAddress(addressDTO);
+
+        return logisticsOrderDTO;
     }
 
     /**

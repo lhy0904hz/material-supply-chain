@@ -23,4 +23,9 @@ public interface SupplierService extends IService<SupplierPo> {
      * 编辑供应商
      */
     Boolean editSupplier(SupplierDTO dto);
+
+    /**
+     * 供应商详情
+     */
+    SupplierVo detail(Long supplierId);
 }

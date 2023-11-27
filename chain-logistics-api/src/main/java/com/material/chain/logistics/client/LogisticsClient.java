@@ -8,11 +8,13 @@ import com.material.chain.logistics.domain.vo.LogisticsTrajectoryVo;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
-@FeignClient(value = "chain-logistics", path = "/chainLogistics")
-public interface LogisticsApi {
+@FeignClient(value = "chain-logistics", path = "/logistics")
+public interface LogisticsClient {
 
     /**
      * 获取物流商集合
@@ -24,11 +26,11 @@ public interface LogisticsApi {
      * 创建订单
      */
     @PostMapping("/createOrder")
-    ApiResult<String> createOrder(LogisticsOrderDTO dto);
+    ApiResult<String> createOrder(@RequestBody LogisticsOrderDTO dto);
 
     /**
      * 获取物流轨迹
      */
     @GetMapping("/getLogisticsTrajectoryList")
-    ApiResult<List<LogisticsTrajectoryVo>> getLogisticsTrajectoryList(Long orderId);
+    ApiResult<List<LogisticsTrajectoryVo>> getLogisticsTrajectoryList(@RequestParam(value = "orderId") Long orderId);
 }

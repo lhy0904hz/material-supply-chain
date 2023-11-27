@@ -1,11 +1,15 @@
 package com.material.chain.business.service;
 
 import com.material.chain.base.holder.SpringContextHolder;
+import com.material.chain.business.domain.dto.PurchaseLogisticsDTO;
 import com.material.chain.business.domain.dto.PurchaseOrderDTO;
 import com.material.chain.business.domain.dto.PurchasePageDTO;
 import com.material.chain.business.domain.vo.PurchaseOrderVo;
 import com.material.chain.business.enums.PurchasePlatformEnum;
 import com.material.chain.common.doamin.vo.PageVo;
+import com.material.chain.logistics.domain.vo.LogisticsProviderVo;
+
+import java.util.List;
 
 public interface PurchaseService {
 
@@ -41,4 +45,14 @@ public interface PurchaseService {
      * 采购单详情
      */
     PurchaseOrderVo detail(Long purchaseOrderId);
+
+    /**
+     * 选择物流发货
+     */
+    Boolean chooseLogistics(PurchaseLogisticsDTO dto);
+
+    /**
+     * 获取物流商列表
+     */
+    List<LogisticsProviderVo> getLogisticsProviderList();
 }

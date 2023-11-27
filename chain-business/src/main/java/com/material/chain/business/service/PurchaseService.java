@@ -36,4 +36,9 @@ public interface PurchaseService {
      * 分页列表
      */
     PageVo<PurchaseOrderVo> pageList(PurchasePageDTO dto);
+
+    /**
+     * 采购单详情
+     */
+    PurchaseOrderVo detail(Long purchaseOrderId);
 }

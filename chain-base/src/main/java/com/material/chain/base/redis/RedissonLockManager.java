@@ -4,10 +4,8 @@ import com.material.chain.base.holder.SpringContextHolder;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
@@ -18,9 +16,6 @@ public class RedissonLockManager {
     private static volatile RedissonLockManager instance;
 
     private static RedissonClient redissonClient;
-
-/*    @Autowired
-    private RedissonClient redissonClient;*/
 
     private RedissonLockManager() {}
 

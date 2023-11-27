@@ -5,7 +5,6 @@ import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.material.chain.base.exception.ApiException;
 import com.material.chain.base.page.PageResponse;
 import com.material.chain.base.page.PageUtil;
@@ -43,10 +42,7 @@ import org.springframework.transaction.support.TransactionSynchronization;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
@@ -189,38 +185,12 @@ public class GlobalPurchaseServiceImpl implements PurchaseService {
             vo.setPurchaseType(PurchasePlatformEnum.GLOBAL.getValue());
 
             //物料列表
-            List<PurchaseOrderItemVo> itemVoList = itemList.stream()
-                    .filter(item -> Objects.equals(item.getPurchaseId(), po.getId()))
-                    .map(item -> {
-                        PurchaseOrderItemVo itemVo = new PurchaseOrderItemVo();
-                        itemVo.setId(item.getId());
-                        itemVo.setPurchaseId(po.getId());
-                        itemVo.setMaterialId(item.getMaterialId());
-                        itemVo.setSupplierId(item.getSupplierId());
-                        itemVo.setMaterialName(item.getMaterialName());
-                        itemVo.setThickness(item.getThickness());
-                        itemVo.setWidth(item.getWidth());
-                        itemVo.setLength(item.getLength());
-                        itemVo.setWeight(item.getWeight());
-                        itemVo.setUnitPrice(item.getUnitPrice());
-                        itemVo.setQuantity(item.getQuantity());
-                        return itemVo;
-                    }).collect(Collectors.toList());
-            vo.setItemList(itemVoList);
+            vo.setItemList(buildPurchaseOrderItem(itemList, po.getId()));
 
             //地址信息
             GlobalPurchaseAddressPo addressPo = addressList.stream().filter(address -> Objects.equals(address.getPurchaseId(), po.getId())).findAny().orElse(null);
             if (Objects.nonNull(addressPo)) {
-                PurchaseOrderAddressVo addressVo = new PurchaseOrderAddressVo();
-                addressVo.setAddress(addressPo.getAddress());
-                addressVo.setPurchaseId(addressPo.getPurchaseId());
-                addressVo.setId(addressPo.getId());
-                addressVo.setProvince(addressPo.getProvince());
-                addressVo.setCity(addressPo.getCity());
-                addressVo.setArea(addressPo.getArea());
-                addressVo.setRecipientName(addressPo.getRecipientName());
-                addressVo.setRecipientPhone(addressPo.getRecipientPhone());
-                vo.setAddress(addressVo);
+                vo.setAddress(buildPurchaseOrderAddress(addressPo));
             }
             purchaseOrderList.add(vo);
         }
@@ -231,6 +201,74 @@ public class GlobalPurchaseServiceImpl implements PurchaseService {
         pageVo.setTotal(page.getTotal().longValue());
 
         return pageVo;
+    }
+
+    /**
+     * 采购单详情
+     * @param purchaseOrderId 采购单id
+     * @return PurchaseOrderVo
+     */
+    @Override
+    public PurchaseOrderVo detail(Long purchaseOrderId) {
+        GlobalPurchaseOrderPo po = globalPurchaseOrderPoMapper.selectById(purchaseOrderId);
+        if (Objects.isNull(po)) {
+            throw new ApiException("采购单不存在");
+        }
+        List<GlobalPurchaseItemPo> itemList = purchaseItemPoMapper.findAllInPurchaseIds(Collections.singletonList(purchaseOrderId));
+        List<GlobalPurchaseAddressPo> addressList = purchaseAddressPoMapper.findAllInPurchaseIds(Collections.singletonList(purchaseOrderId));
+        if (CollectionUtils.isEmpty(itemList) || CollectionUtils.isEmpty(addressList)) {
+            throw new ApiException("采购单物料或地址不存在");
+        }
+        PurchaseOrderVo vo = new PurchaseOrderVo();
+        vo.setPurchaseId(po.getId());
+        vo.setOrderNo(po.getOrederNo());
+        vo.setCurrency(po.getCurrency());
+        vo.setCountryCode(po.getCountryCode());
+        vo.setSupplierId(po.getSupplierId());
+        vo.setPurchaseType(PurchasePlatformEnum.GLOBAL.getValue());
+
+        vo.setItemList(buildPurchaseOrderItem(itemList, po.getId()));
+        vo.setAddress(buildPurchaseOrderAddress(addressList.get(0)));
+        return vo;
+    }
+
+    /**
+     * 封装采购单物料信息
+     */
+    private List<PurchaseOrderItemVo> buildPurchaseOrderItem(List<GlobalPurchaseItemPo> itemList, Long purchaseOrderId) {
+        return itemList.stream()
+                .filter(item -> Objects.equals(item.getPurchaseId(), purchaseOrderId))
+                .map(item -> {
+                    PurchaseOrderItemVo itemVo = new PurchaseOrderItemVo();
+                    itemVo.setId(item.getId());
+                    itemVo.setPurchaseId(purchaseOrderId);
+                    itemVo.setMaterialId(item.getMaterialId());
+                    itemVo.setSupplierId(item.getSupplierId());
+                    itemVo.setMaterialName(item.getMaterialName());
+                    itemVo.setThickness(item.getThickness());
+                    itemVo.setWidth(item.getWidth());
+                    itemVo.setLength(item.getLength());
+                    itemVo.setWeight(item.getWeight());
+                    itemVo.setUnitPrice(item.getUnitPrice());
+                    itemVo.setQuantity(item.getQuantity());
+                    return itemVo;
+                }).collect(Collectors.toList());
+    }
+
+    /**
+     * 封装采购单地址信息
+     */
+    private PurchaseOrderAddressVo buildPurchaseOrderAddress(GlobalPurchaseAddressPo addressPo) {
+        PurchaseOrderAddressVo addressVo = new PurchaseOrderAddressVo();
+        addressVo.setAddress(addressPo.getAddress());
+        addressVo.setPurchaseId(addressPo.getPurchaseId());
+        addressVo.setId(addressPo.getId());
+        addressVo.setProvince(addressPo.getProvince());
+        addressVo.setCity(addressPo.getCity());
+        addressVo.setArea(addressPo.getArea());
+        addressVo.setRecipientName(addressPo.getRecipientName());
+        addressVo.setRecipientPhone(addressPo.getRecipientPhone());
+        return addressVo;
     }
 
     /**

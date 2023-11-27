@@ -13,6 +13,6 @@ public interface GlobalPurchaseItemPoMapper extends BaseMapper<GlobalPurchaseIte
 
     int batchInsert(@Param("list") List<GlobalPurchaseItemPo> list);
 
-    List<GlobalPurchaseItemPo> findAllInPurchaseIds(@Param("purchaseIds")Collection<Long> purchaseIds);
+    List<GlobalPurchaseItemPo> findAllInPurchaseIds(@Param("purchaseIds") List<Long> purchaseIds);
 
 }

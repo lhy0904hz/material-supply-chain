@@ -25,4 +25,9 @@ public class InternalPurchaseServiceImpl implements PurchaseService {
     public PageVo<PurchaseOrderVo> pageList(PurchasePageDTO dto) {
         return null;
     }
+
+    @Override
+    public PurchaseOrderVo detail(Long purchaseOrderId) {
+        return null;
+    }
 }

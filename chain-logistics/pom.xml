@@ -185,6 +185,10 @@
 			<artifactId>redisson-spring-boot-starter</artifactId>
 			<version>3.13.6</version>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-openfeign</artifactId>
+		</dependency>
 	</dependencies>
 
 	<build>

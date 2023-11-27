@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.material.chain.logistics.mapper.LogisticsOrderAddressPoMapper">
+  <resultMap id="BaseResultMap" type="com.material.chain.logistics.domain.po.LogisticsOrderAddressPo">
+    <!--@mbg.generated-->
+    <!--@Table t_logistics_order_address-->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="provider_id" jdbcType="BIGINT" property="providerId" />
+    <result column="order_id" jdbcType="BIGINT" property="orderId" />
+    <result column="recipient_province" jdbcType="VARCHAR" property="recipientProvince" />
+    <result column="recipient_city" jdbcType="VARCHAR" property="recipientCity" />
+    <result column="recipient_area" jdbcType="VARCHAR" property="recipientArea" />
+    <result column="recipient_name" jdbcType="VARCHAR" property="recipientName" />
+    <result column="recipient_phone" jdbcType="VARCHAR" property="recipientPhone" />
+    <result column="recipient_address" jdbcType="VARCHAR" property="recipientAddress" />
+    <result column="sender_province" jdbcType="VARCHAR" property="senderProvince" />
+    <result column="sender_city" jdbcType="VARCHAR" property="senderCity" />
+    <result column="sender_area" jdbcType="VARCHAR" property="senderArea" />
+    <result column="sender_name" jdbcType="VARCHAR" property="senderName" />
+    <result column="sender_phone" jdbcType="VARCHAR" property="senderPhone" />
+    <result column="sender_address" jdbcType="VARCHAR" property="senderAddress" />
+    <result column="create_id" jdbcType="BIGINT" property="createId" />
+    <result column="update_id" jdbcType="BIGINT" property="updateId" />
+    <result column="create_time" jdbcType="BIGINT" property="createTime" />
+    <result column="update_time" jdbcType="BIGINT" property="updateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, provider_id, order_id, recipient_province, recipient_city, recipient_area, recipient_name, 
+    recipient_phone, recipient_address, sender_province, sender_city, sender_area, sender_name, 
+    sender_phone, sender_address, create_id, update_id, create_time, update_time
+  </sql>
+  <update id="updateBatch" parameterType="java.util.List">
+    <!--@mbg.generated-->
+    update t_logistics_order_address
+    <trim prefix="set" suffixOverrides=",">
+      <trim prefix="provider_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.providerId,jdbcType=BIGINT}
+        </foreach>
+      </trim>
+      <trim prefix="order_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.orderId,jdbcType=BIGINT}
+        </foreach>
+      </trim>
+      <trim prefix="recipient_province = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.recipientProvince,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="recipient_city = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.recipientCity,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="recipient_area = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.recipientArea,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="recipient_name = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.recipientName,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="recipient_phone = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.recipientPhone,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="recipient_address = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.recipientAddress,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="sender_province = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.senderProvince,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="sender_city = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.senderCity,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="sender_area = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.senderArea,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="sender_name = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.senderName,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="sender_phone = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.senderPhone,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="sender_address = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.senderAddress,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="create_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.createId,jdbcType=BIGINT}
+        </foreach>
+      </trim>
+      <trim prefix="update_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.updateId,jdbcType=BIGINT}
+        </foreach>
+      </trim>
+      <trim prefix="create_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.createTime,jdbcType=BIGINT}
+        </foreach>
+      </trim>
+      <trim prefix="update_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.updateTime,jdbcType=BIGINT}
+        </foreach>
+      </trim>
+    </trim>
+    where id in
+    <foreach close=")" collection="list" item="item" open="(" separator=", ">
+      #{item.id,jdbcType=BIGINT}
+    </foreach>
+  </update>
+  <update id="updateBatchSelective" parameterType="java.util.List">
+    <!--@mbg.generated-->
+    update t_logistics_order_address
+    <trim prefix="set" suffixOverrides=",">
+      <trim prefix="provider_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.providerId != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.providerId,jdbcType=BIGINT}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="order_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.orderId != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.orderId,jdbcType=BIGINT}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="recipient_province = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.recipientProvince != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.recipientProvince,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="recipient_city = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.recipientCity != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.recipientCity,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="recipient_area = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.recipientArea != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.recipientArea,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="recipient_name = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.recipientName != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.recipientName,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="recipient_phone = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.recipientPhone != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.recipientPhone,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="recipient_address = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.recipientAddress != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.recipientAddress,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="sender_province = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.senderProvince != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.senderProvince,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="sender_city = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.senderCity != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.senderCity,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="sender_area = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.senderArea != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.senderArea,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="sender_name = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.senderName != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.senderName,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="sender_phone = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.senderPhone != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.senderPhone,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="sender_address = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.senderAddress != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.senderAddress,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="create_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.createId != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.createId,jdbcType=BIGINT}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="update_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.updateId != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.updateId,jdbcType=BIGINT}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="create_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.createTime != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.createTime,jdbcType=BIGINT}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="update_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.updateTime != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.updateTime,jdbcType=BIGINT}
+          </if>
+        </foreach>
+      </trim>
+    </trim>
+    where id in
+    <foreach close=")" collection="list" item="item" open="(" separator=", ">
+      #{item.id,jdbcType=BIGINT}
+    </foreach>
+  </update>
+  <insert id="batchInsert" keyColumn="id" keyProperty="id" parameterType="map" useGeneratedKeys="true">
+    <!--@mbg.generated-->
+    insert into t_logistics_order_address
+    (provider_id, order_id, recipient_province, recipient_city, recipient_area, recipient_name, 
+      recipient_phone, recipient_address, sender_province, sender_city, sender_area, 
+      sender_name, sender_phone, sender_address, create_id, update_id, create_time, update_time
+      )
+    values
+    <foreach collection="list" item="item" separator=",">
+      (#{item.providerId,jdbcType=BIGINT}, #{item.orderId,jdbcType=BIGINT}, #{item.recipientProvince,jdbcType=VARCHAR}, 
+        #{item.recipientCity,jdbcType=VARCHAR}, #{item.recipientArea,jdbcType=VARCHAR}, 
+        #{item.recipientName,jdbcType=VARCHAR}, #{item.recipientPhone,jdbcType=VARCHAR}, 
+        #{item.recipientAddress,jdbcType=VARCHAR}, #{item.senderProvince,jdbcType=VARCHAR}, 
+        #{item.senderCity,jdbcType=VARCHAR}, #{item.senderArea,jdbcType=VARCHAR}, #{item.senderName,jdbcType=VARCHAR}, 
+        #{item.senderPhone,jdbcType=VARCHAR}, #{item.senderAddress,jdbcType=VARCHAR}, #{item.createId,jdbcType=BIGINT}, 
+        #{item.updateId,jdbcType=BIGINT}, #{item.createTime,jdbcType=BIGINT}, #{item.updateTime,jdbcType=BIGINT}
+        )
+    </foreach>
+  </insert>
+</mapper>

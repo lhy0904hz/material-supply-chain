@@ -18,5 +18,13 @@
     id, order_no, business_no, `status`, create_id, update_id, create_time, update_time
   </sql>
 
-
+  <update id="updateStatusByIds">
+        update t_logistics_order
+        set `status`=#{status,jdbcType=INTEGER}
+        where id in
+        <foreach item="item" index="index" collection="ids"
+                 open="(" separator="," close=")">
+            #{item,jdbcType=BIGINT}
+        </foreach>
+    </update>
 </mapper>

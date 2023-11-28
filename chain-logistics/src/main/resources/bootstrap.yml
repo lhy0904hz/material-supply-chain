@@ -17,6 +17,13 @@ spring:
       config:
         ###配置中心连接地址
         server-addr: 127.0.0.1:8848
+        namespace: fd972cdb-bbd4-4112-9d29-fd709087bb52
+        enabled: true
+        file-extension: yaml
+        extension-configs:
+          - data-id: xxl-job.yaml
+            group: DEFAULT_GROUP
+            refresh: true
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/chain_logistics?useAffectedRows=true&rewriteBatchedStatements=true&allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=GMT%2B8

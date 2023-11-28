@@ -1,10 +1,16 @@
 package com.material.chain.logistics.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.material.chain.base.page.PageResponse;
+import com.material.chain.base.page.PageUtil;
+import com.material.chain.common.doamin.vo.PageVo;
 import com.material.chain.common.enums.StatusEnum;
 import com.material.chain.logistics.domain.dto.LogisticsOrderAddressDTO;
 import com.material.chain.logistics.domain.dto.LogisticsOrderDTO;
 import com.material.chain.logistics.domain.dto.LogisticsOrderItemDTO;
 import com.material.chain.logistics.domain.po.*;
+import com.material.chain.logistics.domain.vo.LogisticsOrderVo;
 import com.material.chain.logistics.domain.vo.LogisticsProviderVo;
 import com.material.chain.logistics.domain.vo.LogisticsTrajectoryVo;
 import com.material.chain.common.enums.LogisticsStatusEnum;
@@ -18,10 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -156,5 +159,45 @@ public class LogisticsServiceImpl implements LogisticsService {
             vo.setDateTime(t.getCreateTime());
             return vo;
         }).collect(Collectors.toList());
+    }
+
+    /**
+     * 分页列表
+     */
+    @Override
+    public PageVo<LogisticsOrderVo> pageList(LogisticsOrderDTO dto) {
+        LambdaQueryWrapper<LogisticsOrderPo> wrapper = Wrappers.lambdaQuery();
+        wrapper.eq(StringUtils.isNotBlank(dto.getLogisticsOrderNo()), LogisticsOrderPo::getOrderNo, dto.getLogisticsOrderNo());
+        wrapper.eq(StringUtils.isNotBlank(dto.getBusinessNo()), LogisticsOrderPo::getOrderNo, dto.getBusinessNo());
+        wrapper.eq(Objects.nonNull(dto.getStatus()), LogisticsOrderPo::getOrderNo, dto.getStatus());
+
+        PageResponse<LogisticsOrderPo> page = PageUtil.getPage(() -> orderPoMapper.selectList(wrapper));
+        List<LogisticsOrderPo> records = Optional.of(page).map(PageResponse::getRecords).orElse(new ArrayList<>());
+        if (CollectionUtils.isEmpty(records)) {
+            return new PageVo<>(0L, dto.getPageNo().longValue(), dto.getPageSize().longValue(), new ArrayList<>());
+        }
+        PageVo<LogisticsOrderVo> pageVo = new PageVo<>();
+        List<LogisticsOrderVo> logisticsOrderList = new ArrayList<>();
+        for (LogisticsOrderPo po : records) {
+            LogisticsOrderVo vo = new LogisticsOrderVo();
+            vo.setLogisticsOrderId(po.getId());
+            vo.setOrderNo(po.getOrderNo());
+            vo.setBusinessNo(po.getBusinessNo());
+            vo.setStatus(po.getStatus());
+            logisticsOrderList.add(vo);
+        }
+        pageVo.setPageNo(page.getPageNo().longValue());
+        pageVo.setPageSize(page.getSize().longValue());
+        pageVo.setRecords(logisticsOrderList);
+        pageVo.setTotal(page.getTotal().longValue());
+        return pageVo;
+    }
+
+    /**
+     * 根据id修改状态
+     */
+    @Override
+    public void updateStatusByIds(Integer status, List<Long> ids) {
+        orderPoMapper.updateStatusByIds(status, ids);
     }
 }

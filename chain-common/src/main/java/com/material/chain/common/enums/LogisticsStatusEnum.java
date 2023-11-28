@@ -11,7 +11,7 @@ public enum LogisticsStatusEnum {
 
     VISIT_PICKING_UP(5001, "等待上门揽件"),
 
-    OUT_BOUND(5002, "已出库"),
+    OUT_BOUND(5002, "已发货"),
 
     IN_TRANSIT(5003, "运输中"),
 

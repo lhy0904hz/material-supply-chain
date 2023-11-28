@@ -12,8 +12,8 @@ spring:
       discovery:
         enabled: true
         server-addr: 127.0.0.1:8848
-        namespace: public
-        group: public
+        namespace: fd972cdb-bbd4-4112-9d29-fd709087bb52
+        group: DEFAULT_GROUP
       config:
         ###配置中心连接地址
         server-addr: 127.0.0.1:8848

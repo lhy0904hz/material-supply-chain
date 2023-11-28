@@ -8,8 +8,8 @@ spring:
     nacos:
       discovery:
         server-addr: localhost:8848
-        namespace: public
-        group: public
+        namespace: fd972cdb-bbd4-4112-9d29-fd709087bb52
+        group: DEFAULT_GROUP
     gateway:
       globalcors:
         corsConfigurations:

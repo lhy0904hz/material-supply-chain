@@ -149,13 +149,7 @@ public class SupplierServiceImpl extends ServiceImpl<SupplierPoMapper, SupplierP
         vo.setLevel(supplierPo.getLevel());
 
         //供应商地址信息
-        LambdaQueryWrapper<SupplierAddressPo> wrapper = Wrappers.lambdaQuery();
-        wrapper.eq(SupplierAddressPo::getSupplierId, supplierId);
-        wrapper.eq(SupplierAddressPo::getIsDefault, 0);
-        List<SupplierAddressPo> supplierAddressList = supplierAddressPoMapper.selectList(wrapper);
-        if (CollectionUtils.isEmpty(supplierAddressList)) {
-            throw new ApiException("供应商地址不存在");
-        }
+        List<SupplierAddressPo> supplierAddressList = getSupplierAddress(supplierId);
         List<SupplierAddressVo> addressList = supplierAddressList.stream().map(address -> {
             SupplierAddressVo addressVo = new SupplierAddressVo();
             addressVo.setAddressId(address.getId());
@@ -173,6 +167,21 @@ public class SupplierServiceImpl extends ServiceImpl<SupplierPoMapper, SupplierP
         vo.setAddressList(addressList);
 
         return vo;
+    }
+
+    /**
+     * 获取供应商地址
+     */
+    @Override
+    public List<SupplierAddressPo> getSupplierAddress(Long supplierId) {
+        LambdaQueryWrapper<SupplierAddressPo> wrapper = Wrappers.lambdaQuery();
+        wrapper.eq(SupplierAddressPo::getSupplierId, supplierId);
+        wrapper.eq(SupplierAddressPo::getIsDefault, 0);
+        List<SupplierAddressPo> supplierAddressList = supplierAddressPoMapper.selectList(wrapper);
+        if (CollectionUtils.isEmpty(supplierAddressList)) {
+            throw new ApiException("供应商地址不存在");
+        }
+        return supplierAddressList;
     }
 
     /**

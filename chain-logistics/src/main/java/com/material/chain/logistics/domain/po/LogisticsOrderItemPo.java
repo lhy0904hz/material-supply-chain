@@ -17,7 +17,7 @@ public class LogisticsOrderItemPo {
     /**
      * id
      */
-    @TableId(value = "id", type = IdType.INPUT)
+    @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 
     /**

@@ -6,9 +6,6 @@ import java.util.List;
 import org.apache.ibatis.annotations.Param;
 
 public interface LogisticsTrajectoryPoMapper extends BaseMapper<LogisticsTrajectoryPo> {
-    int updateBatch(List<LogisticsTrajectoryPo> list);
-
-    int updateBatchSelective(List<LogisticsTrajectoryPo> list);
 
     int batchInsert(@Param("list") List<LogisticsTrajectoryPo> list);
 

@@ -11,9 +11,11 @@ import com.material.chain.base.page.PageUtil;
 import com.material.chain.base.redis.RedissonLockManager;
 import com.material.chain.base.utils.AppContextUtil;
 import com.material.chain.business.constant.TopicConstant;
+import com.material.chain.business.convert.LogisticsFunctionConvert;
 import com.material.chain.business.domain.dto.*;
 import com.material.chain.business.domain.po.*;
 import com.material.chain.business.domain.vo.*;
+import com.material.chain.business.service.LogisticsService;
 import com.material.chain.common.enums.OrderEnum;
 import com.material.chain.business.enums.PayEnum;
 import com.material.chain.business.enums.PurchasePlatformEnum;
@@ -68,6 +70,8 @@ public class GlobalPurchaseServiceImpl implements PurchaseService {
     private SupplierService supplierService;
     @Autowired
     private LogisticsClient logisticsClient;
+    @Autowired
+    private LogisticsService<GlobalPurchaseOrderPo, GlobalPurchaseAddressPo, GlobalPurchaseItemPo> logisticsService;
 
 
     /**
@@ -244,20 +248,34 @@ public class GlobalPurchaseServiceImpl implements PurchaseService {
     @Override
     public Boolean chooseLogistics(PurchaseLogisticsDTO dto) {
         Long purchaseOrderId = dto.getPurchaseOrderId();
-        PurchaseOrderVo detail = this.detail(purchaseOrderId);
-        SupplierVo supplierInfo = supplierService.detail(detail.getSupplierId());
-        if (Objects.isNull(supplierInfo)) {
-            throw new ApiException("供应商信息不存在");
+        GlobalPurchaseOrderPo po = globalPurchaseOrderPoMapper.selectById(purchaseOrderId);
+        if (Objects.isNull(po)) {
+            throw new ApiException("采购单不存在");
         }
+        if (!Objects.equals(po.getOrderStatus(), OrderEnum.ORDER_CREATE.getCode())) {
+            throw new ApiException("请勿重复选择物流发货");
+        }
+
+        LambdaQueryWrapper<GlobalPurchaseItemPo> wrapper = Wrappers.lambdaQuery();
+        wrapper.eq(GlobalPurchaseItemPo::getPurchaseId, purchaseOrderId);
+        List<GlobalPurchaseItemPo> globalPurchaseItemList = purchaseItemPoMapper.selectList(wrapper);
+        if (CollectionUtils.isEmpty(globalPurchaseItemList)) {
+            throw new ApiException("包裹信息不存在");
+        }
+
+        LambdaQueryWrapper<GlobalPurchaseAddressPo> addressWrapper = Wrappers.lambdaQuery();
+        addressWrapper.eq(GlobalPurchaseAddressPo::getPurchaseId, purchaseOrderId);
+        GlobalPurchaseAddressPo purchaseAddressPo = purchaseAddressPoMapper.selectOne(addressWrapper);
+        if (Objects.isNull(purchaseAddressPo)) {
+            throw new ApiException("采购单地址不存在");
+        }
+
         Long currentUserId = AppContextUtil.getCurrentUserId();
 
-        SupplierAddressVo addressVo = Optional.of(supplierInfo)
-                .map(SupplierVo::getAddressList)
-                .orElseThrow(() -> new ApiException("供应商地址不存在"))
-                .stream()
-                .filter(address -> address.getIsDefault() == 0).findAny().orElse(null);
-
-        ApiResult<String> order = logisticsClient.createOrder(buildLogisticsOrder(detail, dto.getProviderId(), currentUserId, addressVo));
+        List<SupplierAddressPo> supplierAddressList = supplierService.getSupplierAddress(po.getSupplierId());
+        SupplierAddressPo supplierAddressPo = supplierAddressList.stream().filter(address -> address.getIsDefault() == 0).findAny().orElse(null);
+        LogisticsOrderDTO logisticsOrderParam = logisticsService.getLogisticsOrderParam(LogisticsFunctionConvert.buildLogisticsFromGlobal(po, purchaseAddressPo, globalPurchaseItemList, supplierAddressPo, currentUserId, dto.getProviderId()));
+        ApiResult<String> order = logisticsClient.createOrder(logisticsOrderParam);
         String logisticsOrderNo = Optional.ofNullable(order).map(ApiResult::getData).orElseThrow(() -> new ApiException("创建物流单失败"));
 
         GlobalPurchaseOrderPo purchaseOrderPo = new GlobalPurchaseOrderPo();

@@ -3,6 +3,7 @@ package com.material.chain.logistics.job;
 import com.material.chain.common.doamin.vo.PageVo;
 import com.material.chain.common.enums.LogisticsStatusEnum;
 import com.material.chain.logistics.domain.dto.LogisticsOrderDTO;
+import com.material.chain.logistics.domain.dto.LogisticsOrderPageDTO;
 import com.material.chain.logistics.domain.vo.LogisticsOrderVo;
 import com.material.chain.logistics.service.LogisticsService;
 import com.xxl.job.core.handler.annotation.XxlJob;
@@ -88,7 +89,7 @@ public class LogisticsTask {
      * 批量修改状态
      */
     private boolean batchUpdateStatus(Integer pageNo, Integer pageSize, Integer startStatus, Integer endStatus) {
-        LogisticsOrderDTO dto = new LogisticsOrderDTO();
+        LogisticsOrderPageDTO dto = new LogisticsOrderPageDTO();
         dto.setPageNo(pageNo);
         dto.setPageSize(pageSize);
         dto.setStatus(startStatus);

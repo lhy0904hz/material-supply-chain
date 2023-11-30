@@ -9,6 +9,7 @@ import com.material.chain.common.enums.StatusEnum;
 import com.material.chain.logistics.domain.dto.LogisticsOrderAddressDTO;
 import com.material.chain.logistics.domain.dto.LogisticsOrderDTO;
 import com.material.chain.logistics.domain.dto.LogisticsOrderItemDTO;
+import com.material.chain.logistics.domain.dto.LogisticsOrderPageDTO;
 import com.material.chain.logistics.domain.po.*;
 import com.material.chain.logistics.domain.vo.LogisticsOrderVo;
 import com.material.chain.logistics.domain.vo.LogisticsProviderVo;
@@ -76,7 +77,8 @@ public class LogisticsServiceImpl implements LogisticsService {
 
         //新增订单信息
         String orderNo = GenerateNoUtil.generatePurchaseNo();
-        po.setBusinessNo(orderNo);
+        po.setBusinessNo(dto.getBusinessNo());
+        po.setOrderNo(orderNo);
         po.setStatus(LogisticsStatusEnum.VISIT_PICKING_UP.getCode());
         po.setBusinessNo(dto.getBusinessNo());
         po.setCreateId(currentUserId);
@@ -134,6 +136,7 @@ public class LogisticsServiceImpl implements LogisticsService {
         //新增物流轨迹
         LogisticsTrajectoryPo trajectoryPo = new LogisticsTrajectoryPo();
         trajectoryPo.setOrderId(orderId);
+        trajectoryPo.setProviderId(dto.getProviderId());
         trajectoryPo.setTrajectoryDesc(LogisticsStatusEnum.VISIT_PICKING_UP.getValue());
         trajectoryPo.setCreateId(currentUserId);
         trajectoryPo.setUpdateId(currentUserId);
@@ -165,7 +168,7 @@ public class LogisticsServiceImpl implements LogisticsService {
      * 分页列表
      */
     @Override
-    public PageVo<LogisticsOrderVo> pageList(LogisticsOrderDTO dto) {
+    public PageVo<LogisticsOrderVo> pageList(LogisticsOrderPageDTO dto) {
         LambdaQueryWrapper<LogisticsOrderPo> wrapper = Wrappers.lambdaQuery();
         wrapper.eq(StringUtils.isNotBlank(dto.getLogisticsOrderNo()), LogisticsOrderPo::getOrderNo, dto.getLogisticsOrderNo());
         wrapper.eq(StringUtils.isNotBlank(dto.getBusinessNo()), LogisticsOrderPo::getOrderNo, dto.getBusinessNo());

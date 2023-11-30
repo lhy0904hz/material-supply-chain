@@ -14,7 +14,7 @@ import com.material.chain.business.constant.TopicConstant;
 import com.material.chain.business.domain.dto.*;
 import com.material.chain.business.domain.po.*;
 import com.material.chain.business.domain.vo.*;
-import com.material.chain.business.enums.OrderEnum;
+import com.material.chain.common.enums.OrderEnum;
 import com.material.chain.business.enums.PayEnum;
 import com.material.chain.business.enums.PurchasePlatformEnum;
 import com.material.chain.business.mapper.GlobalPurchaseAddressPoMapper;

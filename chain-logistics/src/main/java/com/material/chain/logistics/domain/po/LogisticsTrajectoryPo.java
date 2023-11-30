@@ -23,12 +23,6 @@ public class LogisticsTrajectoryPo {
     private Long id;
 
     /**
-     * 物流商id
-     */
-    @TableField(value = "provider_id")
-    private Long providerId;
-
-    /**
      * 订单ID
      */
     @TableField(value = "order_id")

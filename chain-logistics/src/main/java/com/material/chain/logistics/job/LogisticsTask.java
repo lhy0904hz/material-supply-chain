@@ -31,64 +31,73 @@ public class LogisticsTask {
     /**
      * 等待上门揽件--》已发货
      */
-    @XxlJob(value = "pickUpHandler")
-    public void pickUpHandler() {
+    @XxlJob("pickUpHandler2")
+    public void pickUpHandler2() {
         Integer pageNo = 1;
         Integer pageSize = 10;
+        log.info("等待上门揽件--》已发货 执行");
         while (true) {
             if (batchUpdateStatus(pageNo,
                     pageSize,
                     LogisticsStatusEnum.VISIT_PICKING_UP.getCode(),
-                    LogisticsStatusEnum.OUT_BOUND.getCode())) {
+                    LogisticsStatusEnum.OUT_BOUND.getCode(),
+                    LogisticsStatusEnum.OUT_BOUND.getValue())) {
                 pageNo++;
             } else {
                 break;
             }
         }
+        log.info("等待上门揽件--》已发货 完成");
     }
 
     /**
      * 已发货--》运输中
      */
-    @XxlJob(value = "outBoundHandler")
+    @XxlJob(value = "outBoundHandler", init = "init", destroy = "destroy")
     public void outBoundHandler() {
+        log.info("已发货--》运输中 开始");
         Integer pageNo = 1;
         Integer pageSize = 10;
         while (true) {
             if (batchUpdateStatus(pageNo,
                     pageSize,
                     LogisticsStatusEnum.OUT_BOUND.getCode(),
-                    LogisticsStatusEnum.IN_TRANSIT.getCode())) {
+                    LogisticsStatusEnum.IN_TRANSIT.getCode(),
+                    LogisticsStatusEnum.IN_TRANSIT.getValue())) {
                 pageNo++;
             } else {
                 break;
             }
         }
+        log.info("已发货--》运输中 完成");
     }
 
     /**
      * 运输中--》待签收
      */
-    @XxlJob(value = "inTransitHandler")
+    @XxlJob(value = "inTransitHandler", init = "init", destroy = "destroy")
     public void inTransitHandler() {
+        log.info("运输中--》待签收 开始");
         Integer pageNo = 1;
         Integer pageSize = 10;
         while (true) {
             if (batchUpdateStatus(pageNo,
                     pageSize,
                     LogisticsStatusEnum.IN_TRANSIT.getCode(),
-                    LogisticsStatusEnum.TO_BE_SIGNED.getCode())) {
+                    LogisticsStatusEnum.TO_BE_SIGNED.getCode(),
+                    LogisticsStatusEnum.TO_BE_SIGNED.getValue())) {
                 pageNo++;
             } else {
                 break;
             }
         }
+        log.info("运输中--》待签收 完成");
     }
 
     /**
      * 批量修改状态
      */
-    private boolean batchUpdateStatus(Integer pageNo, Integer pageSize, Integer startStatus, Integer endStatus) {
+    private boolean batchUpdateStatus(Integer pageNo, Integer pageSize, Integer startStatus, Integer endStatus, String desc) {
         LogisticsOrderPageDTO dto = new LogisticsOrderPageDTO();
         dto.setPageNo(pageNo);
         dto.setPageSize(pageSize);
@@ -100,6 +109,17 @@ public class LogisticsTask {
         }
         List<Long> ids = records.stream().map(LogisticsOrderVo::getLogisticsOrderId).collect(Collectors.toList());
         logisticsService.updateStatusByIds(endStatus, ids);
+        logisticsService.addLogisticsLog(ids, desc);
         return true;
+    }
+
+    // 初始化执行
+    public void init() {
+        log.info("init");
+    }
+
+    // 销毁执行
+    public void destroy() {
+        log.info("destory");
     }
 }

@@ -21,7 +21,7 @@ spring:
         enabled: true
         file-extension: yaml
         extension-configs:
-          - data-id: xxl-job.yaml
+          - data-id: xxl-job-logistics.yaml
             group: DEFAULT_GROUP
             refresh: true
   datasource:
@@ -55,6 +55,7 @@ mybatis-plus:
     lazy-loading-enabled: true
     local-cache-scope: statement
     cache-enabled: false
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
   redis:
     database: 0
     host: localhost

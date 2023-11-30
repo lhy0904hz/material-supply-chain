@@ -136,7 +136,6 @@ public class LogisticsServiceImpl implements LogisticsService {
         //新增物流轨迹
         LogisticsTrajectoryPo trajectoryPo = new LogisticsTrajectoryPo();
         trajectoryPo.setOrderId(orderId);
-        trajectoryPo.setProviderId(dto.getProviderId());
         trajectoryPo.setTrajectoryDesc(LogisticsStatusEnum.VISIT_PICKING_UP.getValue());
         trajectoryPo.setCreateId(currentUserId);
         trajectoryPo.setUpdateId(currentUserId);
@@ -171,8 +170,8 @@ public class LogisticsServiceImpl implements LogisticsService {
     public PageVo<LogisticsOrderVo> pageList(LogisticsOrderPageDTO dto) {
         LambdaQueryWrapper<LogisticsOrderPo> wrapper = Wrappers.lambdaQuery();
         wrapper.eq(StringUtils.isNotBlank(dto.getLogisticsOrderNo()), LogisticsOrderPo::getOrderNo, dto.getLogisticsOrderNo());
-        wrapper.eq(StringUtils.isNotBlank(dto.getBusinessNo()), LogisticsOrderPo::getOrderNo, dto.getBusinessNo());
-        wrapper.eq(Objects.nonNull(dto.getStatus()), LogisticsOrderPo::getOrderNo, dto.getStatus());
+        wrapper.eq(StringUtils.isNotBlank(dto.getBusinessNo()), LogisticsOrderPo::getBusinessNo, dto.getBusinessNo());
+        wrapper.eq(Objects.nonNull(dto.getStatus()), LogisticsOrderPo::getStatus, dto.getStatus());
 
         PageResponse<LogisticsOrderPo> page = PageUtil.getPage(() -> orderPoMapper.selectList(wrapper));
         List<LogisticsOrderPo> records = Optional.of(page).map(PageResponse::getRecords).orElse(new ArrayList<>());
@@ -202,5 +201,26 @@ public class LogisticsServiceImpl implements LogisticsService {
     @Override
     public void updateStatusByIds(Integer status, List<Long> ids) {
         orderPoMapper.updateStatusByIds(status, ids);
+    }
+
+    /**
+     * 添加物流轨迹记录
+     */
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public void addLogisticsLog(List<Long> ids, String desc) {
+        long timeMillis = System.currentTimeMillis();
+        List<LogisticsTrajectoryPo> list = new ArrayList<>();
+        for (Long id : ids) {
+            LogisticsTrajectoryPo po = new LogisticsTrajectoryPo();
+            po.setOrderId(id);
+            po.setTrajectoryDesc(desc);
+            po.setCreateId(1L);
+            po.setUpdateId(1L);
+            po.setCreateTime(timeMillis);
+            po.setUpdateTime(timeMillis);
+            list.add(po);
+        }
+        trajectoryPoMapper.batchInsert(list);
     }
 }

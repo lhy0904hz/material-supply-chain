@@ -35,4 +35,9 @@ public interface LogisticsService {
      * 根据id修改状态
      */
     void updateStatusByIds(Integer status, List<Long> ids);
+
+    /**
+     * 添加物流轨迹记录
+     */
+    void addLogisticsLog(List<Long> ids, String desc);
 }

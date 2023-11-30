@@ -5,7 +5,6 @@
     <!--@mbg.generated-->
     <!--@Table t_logistics_trajectory-->
     <id column="id" jdbcType="BIGINT" property="id" />
-    <result column="provider_id" jdbcType="BIGINT" property="providerId" />
     <result column="order_id" jdbcType="BIGINT" property="orderId" />
     <result column="trajectory_desc" jdbcType="VARCHAR" property="trajectoryDesc" />
     <result column="create_id" jdbcType="BIGINT" property="createId" />
@@ -15,18 +14,18 @@
   </resultMap>
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
-    id, provider_id, order_id, trajectory_desc, create_id, update_id, create_time, update_time
+    id, order_id, trajectory_desc, create_id, update_id, create_time, update_time
   </sql>
 
 
   <insert id="batchInsert" keyColumn="id" keyProperty="id" parameterType="map" useGeneratedKeys="true">
     <!--@mbg.generated-->
     insert into t_logistics_trajectory
-    (provider_id, order_id, trajectory_desc, create_id, update_id, create_time, update_time
+    (order_id, trajectory_desc, create_id, update_id, create_time, update_time
       )
     values
     <foreach collection="list" item="item" separator=",">
-      (#{item.providerId,jdbcType=BIGINT}, #{item.orderId,jdbcType=BIGINT}, #{item.trajectoryDesc,jdbcType=VARCHAR}, 
+      (#{item.orderId,jdbcType=BIGINT}, #{item.trajectoryDesc,jdbcType=VARCHAR},
         #{item.createId,jdbcType=BIGINT}, #{item.updateId,jdbcType=BIGINT}, #{item.createTime,jdbcType=BIGINT}, 
         #{item.updateTime,jdbcType=BIGINT})
     </foreach>

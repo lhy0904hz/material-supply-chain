@@ -26,3 +26,7 @@ spring:
           uri: lb://chain-business
           predicates:
             - Path=/v1/api/chain/business/**
+        - id: chain-logistics
+          uri: lb://chain-logistics
+          predicates:
+            - Path=/logistics/**

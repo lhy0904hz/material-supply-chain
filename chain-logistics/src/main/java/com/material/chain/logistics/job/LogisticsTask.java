@@ -53,7 +53,7 @@ public class LogisticsTask {
     /**
      * 已发货--》运输中
      */
-    @XxlJob(value = "outBoundHandler", init = "init", destroy = "destroy")
+    @XxlJob(value = "outBoundHandler")
     public void outBoundHandler() {
         log.info("已发货--》运输中 开始");
         Integer pageNo = 1;
@@ -75,7 +75,7 @@ public class LogisticsTask {
     /**
      * 运输中--》待签收
      */
-    @XxlJob(value = "inTransitHandler", init = "init", destroy = "destroy")
+    @XxlJob(value = "inTransitHandler")
     public void inTransitHandler() {
         log.info("运输中--》待签收 开始");
         Integer pageNo = 1;

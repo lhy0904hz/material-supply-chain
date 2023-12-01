@@ -49,4 +49,9 @@ public class InternalPurchaseServiceImpl implements PurchaseService {
     public void updateStatus(Long id, Integer orderStatus, Integer logisticsStatus) {
 
     }
+
+    @Override
+    public Boolean takeDelivery(Long purchaseId) {
+        return null;
+    }
 }

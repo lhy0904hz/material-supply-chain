@@ -60,4 +60,9 @@ public interface PurchaseService {
      * 修改状态
      */
     void updateStatus(Long id, Integer orderStatus, Integer logisticsStatus);
+
+    /**
+     * 收货
+     */
+    Boolean takeDelivery(Long purchaseId);
 }

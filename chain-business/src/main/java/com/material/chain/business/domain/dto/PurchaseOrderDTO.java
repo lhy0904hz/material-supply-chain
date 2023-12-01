@@ -14,6 +14,9 @@ import java.util.List;
 @NoArgsConstructor
 public class PurchaseOrderDTO {
 
+    @ApiModelProperty(value = "采购单id")
+    private Long purchaseId;
+
     @ApiModelProperty(value = "采购类型 国内：internal 国际：global")
     private String purchaseType;
 

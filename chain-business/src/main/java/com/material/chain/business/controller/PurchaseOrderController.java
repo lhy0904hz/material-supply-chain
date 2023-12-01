@@ -53,4 +53,11 @@ public class PurchaseOrderController {
         PurchaseService service = PurchaseService.getBean(purchaseType);
         return ApiResult.success(service.getLogisticsProviderList());
     }
+
+    @ApiOperation("确认收货")
+    @PostMapping(value = "takeDelivery")
+    public ApiResult<Boolean> takeDelivery(@RequestBody PurchaseOrderDTO dto) {
+        PurchaseService service = PurchaseService.getBean(dto.getPurchaseType());
+        return ApiResult.success(service.takeDelivery(dto.getPurchaseId()));
+    }
 }

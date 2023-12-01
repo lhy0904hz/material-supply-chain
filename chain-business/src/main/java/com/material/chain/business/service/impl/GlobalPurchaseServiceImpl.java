@@ -312,6 +312,15 @@ public class GlobalPurchaseServiceImpl implements PurchaseService {
     }
 
     /**
+     * 收货
+     */
+    @Override
+    public Boolean takeDelivery(Long purchaseId) {
+        updateStatus(purchaseId, OrderEnum.FINISH.getCode(), null);
+        return true;
+    }
+
+    /**
      * 封装物流所需要的订单数据
      */
     private LogisticsOrderDTO buildLogisticsOrder(PurchaseOrderVo vo, Long providerId, Long userId, SupplierAddressVo supplierAddress) {

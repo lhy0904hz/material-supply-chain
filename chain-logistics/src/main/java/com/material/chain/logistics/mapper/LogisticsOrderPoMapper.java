@@ -10,4 +10,8 @@ public interface LogisticsOrderPoMapper extends BaseMapper<LogisticsOrderPo> {
 
     int updateStatusByIds(@Param("status")Integer status,@Param("ids")List<Long> ids);
 
+    LogisticsOrderPo findByBusinessNo(@Param("businessNo") String businessNo);
+
+
+
 }

@@ -35,4 +35,9 @@ public class LogisticsFacade implements LogisticsClient {
     public ApiResult<List<LogisticsTrajectoryVo>> getLogisticsTrajectoryList(Long orderId) {
         return ApiResult.success(logisticsService.getLogisticsTrajectoryList(orderId));
     }
+
+    @Override
+    public ApiResult<Integer> getOrderStatusByBusinessNo(String businessNo) {
+        return ApiResult.success(logisticsService.getOrderStatusByBusinessNo(businessNo));
+    }
 }

@@ -55,4 +55,9 @@ public interface PurchaseService {
      * 获取物流商列表
      */
     List<LogisticsProviderVo> getLogisticsProviderList();
+
+    /**
+     * 修改状态
+     */
+    void updateStatus(Long id, Integer orderStatus, Integer logisticsStatus);
 }

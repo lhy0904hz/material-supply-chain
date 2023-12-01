@@ -15,9 +15,7 @@ public enum LogisticsStatusEnum {
 
     IN_TRANSIT(5003, "运输中"),
 
-    TO_BE_SIGNED(5004, "待签收"),
-
-    COMPLETED(5005, "已完成"),
+    COMPLETED(5004, "运输完成"),
 
     ;
 

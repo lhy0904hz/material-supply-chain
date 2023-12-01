@@ -1,8 +1,9 @@
 package com.material.chain.logistics.job;
 
+import com.material.chain.base.page.PageParam;
+import com.material.chain.base.page.ThreadPagingUtil;
 import com.material.chain.common.doamin.vo.PageVo;
 import com.material.chain.common.enums.LogisticsStatusEnum;
-import com.material.chain.logistics.domain.dto.LogisticsOrderDTO;
 import com.material.chain.logistics.domain.dto.LogisticsOrderPageDTO;
 import com.material.chain.logistics.domain.vo.LogisticsOrderVo;
 import com.material.chain.logistics.service.LogisticsService;
@@ -84,8 +85,8 @@ public class LogisticsTask {
             if (batchUpdateStatus(pageNo,
                     pageSize,
                     LogisticsStatusEnum.IN_TRANSIT.getCode(),
-                    LogisticsStatusEnum.TO_BE_SIGNED.getCode(),
-                    LogisticsStatusEnum.TO_BE_SIGNED.getValue())) {
+                    LogisticsStatusEnum.COMPLETED.getCode(),
+                    LogisticsStatusEnum.COMPLETED.getValue())) {
                 pageNo++;
             } else {
                 break;
@@ -98,9 +99,11 @@ public class LogisticsTask {
      * 批量修改状态
      */
     private boolean batchUpdateStatus(Integer pageNo, Integer pageSize, Integer startStatus, Integer endStatus, String desc) {
+        PageParam pageParam = new PageParam();
+        pageParam.setPageNo(pageNo);
+        pageParam.setPageSize(pageSize);
+        ThreadPagingUtil.set(pageParam);
         LogisticsOrderPageDTO dto = new LogisticsOrderPageDTO();
-        dto.setPageNo(pageNo);
-        dto.setPageSize(pageSize);
         dto.setStatus(startStatus);
         PageVo<LogisticsOrderVo> pageVo = logisticsService.pageList(dto);
         List<LogisticsOrderVo> records = Optional.ofNullable(pageVo).map(PageVo::getRecords).orElse(new ArrayList<>());
@@ -111,15 +114,5 @@ public class LogisticsTask {
         logisticsService.updateStatusByIds(endStatus, ids);
         logisticsService.addLogisticsLog(ids, desc);
         return true;
-    }
-
-    // 初始化执行
-    public void init() {
-        log.info("init");
-    }
-
-    // 销毁执行
-    public void destroy() {
-        log.info("destory");
     }
 }

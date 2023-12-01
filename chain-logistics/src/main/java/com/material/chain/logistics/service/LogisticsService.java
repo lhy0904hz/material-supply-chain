@@ -40,4 +40,9 @@ public interface LogisticsService {
      * 添加物流轨迹记录
      */
     void addLogisticsLog(List<Long> ids, String desc);
+
+    /**
+     * 根据业务单号查询物流状态
+     */
+    Integer getOrderStatusByBusinessNo(String businessNo);
 }

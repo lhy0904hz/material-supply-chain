@@ -17,7 +17,9 @@ public enum OrderEnum {
 
     IN_TRANSIT(3004, "运输中"),
 
-    FINISH(3005, "运输完成"),
+    TO_BE_SIGNED(3005, "待签收"),
+
+    FINISH(3006, "已完成"),
 
         ;
 

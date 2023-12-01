@@ -33,4 +33,10 @@ public interface LogisticsClient {
      */
     @GetMapping("/getLogisticsTrajectoryList")
     ApiResult<List<LogisticsTrajectoryVo>> getLogisticsTrajectoryList(@RequestParam(value = "orderId") Long orderId);
+
+    /**
+     * 根据业务单号获取物流状态
+     */
+    @GetMapping("/getOrderStatusByBusinessNo")
+    ApiResult<Integer> getOrderStatusByBusinessNo(@RequestParam(value = "businessNo") String businessNo);
 }

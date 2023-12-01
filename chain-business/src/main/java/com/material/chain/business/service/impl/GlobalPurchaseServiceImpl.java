@@ -170,6 +170,8 @@ public class GlobalPurchaseServiceImpl implements PurchaseService {
     public PageVo<PurchaseOrderVo> pageList(PurchasePageDTO dto) {
         LambdaQueryWrapper<GlobalPurchaseOrderPo> wrapper = Wrappers.lambdaQuery();
         wrapper.eq(StringUtils.isNotBlank(dto.getOrderNo()), GlobalPurchaseOrderPo::getOrederNo, dto.getOrderNo());
+        wrapper.eq(Objects.nonNull(dto.getStatus()), GlobalPurchaseOrderPo::getOrderStatus, dto.getStatus());
+        wrapper.notIn(CollectionUtils.isNotEmpty(dto.getNotInStatusList()), GlobalPurchaseOrderPo::getOrderStatus, dto.getNotInStatusList());
         PageResponse<GlobalPurchaseOrderPo> page = PageUtil.getPage(() -> globalPurchaseOrderPoMapper.selectList(wrapper));
         List<GlobalPurchaseOrderPo> records = Optional.of(page).map(PageResponse::getRecords).orElse(new ArrayList<>());
         if (CollectionUtils.isEmpty(records)) {
@@ -298,6 +300,15 @@ public class GlobalPurchaseServiceImpl implements PurchaseService {
                 .ofNullable(providerList)
                 .map(ApiResult::getData)
                 .orElseThrow(() -> new ApiException("没有找到物流商信息"));
+    }
+
+    @Override
+    public void updateStatus(Long id, Integer orderStatus, Integer logisticsStatus) {
+        GlobalPurchaseOrderPo po = new GlobalPurchaseOrderPo();
+        po.setId(id);
+        po.setOrderStatus(Objects.nonNull(orderStatus) ? orderStatus : null);
+        po.setLogisticsStatus(Objects.nonNull(logisticsStatus) ? logisticsStatus : null);
+        globalPurchaseOrderPoMapper.updateById(po);
     }
 
     /**

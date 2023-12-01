@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @ApiModel
 @Data
 @AllArgsConstructor
@@ -21,4 +23,10 @@ public class PurchasePageDTO {
 
     @ApiModelProperty(value = "采购单编号")
     private String orderNo;
+
+    @ApiModelProperty(value = "订单状态")
+    private Integer status;
+
+    @ApiModelProperty(value = "不包含的订单状态")
+    private List<Integer> notInStatusList;
 }

@@ -223,4 +223,13 @@ public class LogisticsServiceImpl implements LogisticsService {
         }
         trajectoryPoMapper.batchInsert(list);
     }
+
+    /**
+     * 根据业务单号查询物流状态
+     */
+    @Override
+    public Integer getOrderStatusByBusinessNo(String businessNo) {
+        LogisticsOrderPo orderPo = orderPoMapper.findByBusinessNo(businessNo);
+        return Optional.ofNullable(orderPo).map(LogisticsOrderPo::getStatus).orElse(null);
+    }
 }

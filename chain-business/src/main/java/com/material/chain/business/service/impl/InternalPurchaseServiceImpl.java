@@ -44,4 +44,9 @@ public class InternalPurchaseServiceImpl implements PurchaseService {
     public List<LogisticsProviderVo> getLogisticsProviderList() {
         return null;
     }
+
+    @Override
+    public void updateStatus(Long id, Integer orderStatus, Integer logisticsStatus) {
+
+    }
 }

@@ -21,6 +21,8 @@ public enum OrderEnum {
 
     FINISH(3006, "已完成"),
 
+    GENERATE_TASK(3007, "已生成任务")
+
         ;
 
     private Integer code;

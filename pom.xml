@@ -5,10 +5,11 @@
     <packaging>pom</packaging>
     <modules>
         <module>chain-user</module>
-        <module>chain-flow</module>
         <module>chain-common</module>
         <module>chain-gateway</module>
         <module>chain-base</module>
+        <module>chain-logistics</module>
+        <module>chain-logistics-api</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>

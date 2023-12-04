@@ -16,7 +16,7 @@ import com.material.chain.user.domain.po.PermissionPo;
 import com.material.chain.user.domain.po.RolePermissionPo;
 import com.material.chain.user.domain.po.RoleUserPo;
 import com.material.chain.user.domain.vo.PermissionVo;
-import com.material.chain.user.domain.vo.UserInfoResponse;
+import com.material.chain.user.domain.vo.UserInfoResponseVo;
 import com.material.chain.user.mapper.PermissionPoMapper;
 import com.material.chain.user.mapper.RolePermissionPoMapper;
 import com.material.chain.user.mapper.RoleUserPoMapper;
@@ -111,7 +111,7 @@ public class PermissionServiceImpl extends ServiceImpl<PermissionPoMapper, Permi
     @Override
     public List<PermissionVo> getPermissionByCurrentUserId() {
         Object user = redisTemplateService.get(String.format(RedisKey.ADMIN_USER_KEY, AppContextUtil.getCurrentUserId()));
-        UserInfoResponse userInfoVo = JSONObject.parseObject(String.valueOf(user), UserInfoResponse.class);
+        UserInfoResponseVo userInfoVo = JSONObject.parseObject(String.valueOf(user), UserInfoResponseVo.class);
         if (Objects.isNull(userInfoVo)) {
             throw new ApiException("token已失效，请重新登录");
         }

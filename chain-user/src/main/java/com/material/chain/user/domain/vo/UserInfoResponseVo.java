@@ -6,7 +6,7 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class UserInfoResponse {
+public class UserInfoResponseVo {
 
     @ApiModelProperty(value = "账号")
     private String account;

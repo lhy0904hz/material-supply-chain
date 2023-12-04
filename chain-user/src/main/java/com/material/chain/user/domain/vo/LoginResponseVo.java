@@ -6,7 +6,7 @@ import lombok.Data;
 
 @ApiModel
 @Data
-public class LoginResponse {
+public class LoginResponseVo {
 
     @ApiModelProperty(value = "token")
     private String token;

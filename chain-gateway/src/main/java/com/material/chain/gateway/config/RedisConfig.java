@@ -9,12 +9,6 @@ import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactor
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
-/**
- * @Classname RedisConfig
- * @Description Redis配置
- * @Date 2019/12/18 14:16
- * @Created by LiuHaoYang
- */
 @Configuration
 public class RedisConfig {
 

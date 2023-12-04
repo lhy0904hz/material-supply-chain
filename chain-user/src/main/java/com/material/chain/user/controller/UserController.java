@@ -5,7 +5,7 @@ import com.material.chain.user.domain.dto.LoginDTO;
 import com.material.chain.user.domain.dto.PermissionDTO;
 import com.material.chain.user.domain.dto.UserRoleDTO;
 import com.material.chain.user.domain.vo.PermissionVo;
-import com.material.chain.user.domain.vo.UserInfoResponse;
+import com.material.chain.user.domain.vo.UserInfoResponseVo;
 import com.material.chain.user.service.PermissionService;
 import com.material.chain.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +30,7 @@ public class UserController {
      * @return LoginResponse
      */
     @PostMapping(value = "login")
-    public ApiResult<UserInfoResponse> login(@RequestBody LoginDTO dto) {
+    public ApiResult<UserInfoResponseVo> login(@RequestBody LoginDTO dto) {
         return ApiResult.success(userService.login(dto));
     }
 

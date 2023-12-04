@@ -9,12 +9,12 @@ import com.material.chain.base.exception.ApiException;
 import com.material.chain.base.redis.RedisTemplateService;
 import com.material.chain.base.utils.AppContextUtil;
 import com.material.chain.common.constant.RedisKey;
+import com.material.chain.common.enums.StatusEnum;
 import com.material.chain.common.utils.JwtUtil;
 import com.material.chain.user.convert.UserConvert;
 import com.material.chain.user.domain.dto.LoginDTO;
 import com.material.chain.user.domain.po.UserPo;
-import com.material.chain.user.domain.vo.UserInfoResponse;
-import com.material.chain.user.enums.StatusEnum;
+import com.material.chain.user.domain.vo.UserInfoResponseVo;
 import com.material.chain.user.mapper.UserPoMapper;
 import com.material.chain.user.service.RoleService;
 import com.material.chain.user.service.UserService;
@@ -46,7 +46,7 @@ public class UserServiceImpl extends ServiceImpl<UserPoMapper, UserPo> implement
      * @return LoginResponse
      */
     @Override
-    public UserInfoResponse login(LoginDTO dto) {
+    public UserInfoResponseVo login(LoginDTO dto) {
         log.info("[登录]：入参：{}", JSON.toJSONString(dto));
         String loginPassword = UserConvert.decryptionByPassword(dto.getPassword());
         LambdaQueryWrapper<UserPo> wrapper = Wrappers.lambdaQuery();
@@ -60,7 +60,7 @@ public class UserServiceImpl extends ServiceImpl<UserPoMapper, UserPo> implement
         if (!Objects.equals(loginPassword, passwordByDB)) {
             throw new ApiException("账号或密码错误");
         }
-        UserInfoResponse response = new UserInfoResponse();
+        UserInfoResponseVo response = new UserInfoResponseVo();
         response.setAccount(userPo.getAccount());
         response.setUserName(userPo.getUserName());
 

@@ -11,12 +11,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-/**
- * @Classname RedisTemplateUtils
- * @Description redis操作工具类
- * @Date 2020/1/7 9:37
- * @Created by LiuHaoYang
- */
 @Component
 public class RedisTemplateService {
 

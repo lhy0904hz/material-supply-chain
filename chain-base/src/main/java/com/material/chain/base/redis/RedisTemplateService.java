@@ -1,7 +1,5 @@
 package com.material.chain.base.redis;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.support.atomic.RedisAtomicLong;
 import org.springframework.stereotype.Component;
@@ -11,12 +9,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-/**
- * @Classname RedisTemplateUtils
- * @Description redis操作工具类
- * @Date 2020/1/7 9:37
- * @Created by LiuHaoYang
- */
 @Component
 public class RedisTemplateService {
 
